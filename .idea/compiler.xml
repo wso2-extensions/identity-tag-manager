@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="org.wso2.identity.asgardeo.tag.service.api.dispatcher" />
+        <module name="org.wso2.identity.asgardeo.tag.service.api.rest.v1" />
+        <module name="org.wso2.identity.asgardeo.tag.service" />
+        <module name="org.wso2.identity.asgardeo.tag.service.api.rest.commons" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="org.wso2.identity.asgardeo.tag.service" target="1.8" />
+      <module name="org.wso2.identity.asgardeo.tag.service.api.dispatcher" target="1.8" />
+      <module name="org.wso2.identity.asgardeo.tag.service.api.rest" target="1.8" />
+      <module name="org.wso2.identity.asgardeo.tag.service.api.rest.commons" target="1.8" />
+      <module name="org.wso2.identity.asgardeo.tag.service.api.rest.v1" target="1.8" />
+      <module name="tag-mgt" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

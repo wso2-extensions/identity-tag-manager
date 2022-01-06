@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.wso2.carbon.identity.framework:org.wso2.carbon.identity.testutil:5.20.245">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/wso2/carbon/identity/framework/org.wso2.carbon.identity.testutil/5.20.245/org.wso2.carbon.identity.testutil-5.20.245.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/wso2/carbon/identity/framework/org.wso2.carbon.identity.testutil/5.20.245/org.wso2.carbon.identity.testutil-5.20.245-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/wso2/carbon/identity/framework/org.wso2.carbon.identity.testutil/5.20.245/org.wso2.carbon.identity.testutil-5.20.245-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/identity-tag-manager.iml" filepath="$PROJECT_DIR$/.idea/identity-tag-manager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/components/org.wso2.identity.asgardeo.tag.service/org.wso2.identity.asgardeo.tag.service.iml" filepath="$PROJECT_DIR$/components/org.wso2.identity.asgardeo.tag.service/org.wso2.identity.asgardeo.tag.service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/components/tag-mgt/org.wso2.identity.asgardeo.tag.service.api.dispatcher/org.wso2.identity.asgardeo.tag.service.api.dispatcher.iml" filepath="$PROJECT_DIR$/components/tag-mgt/org.wso2.identity.asgardeo.tag.service.api.dispatcher/org.wso2.identity.asgardeo.tag.service.api.dispatcher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/components/tag-mgt/org.wso2.identity.asgardeo.tag.service.api.rest/org.wso2.identity.asgardeo.tag.service.api.rest.iml" filepath="$PROJECT_DIR$/components/tag-mgt/org.wso2.identity.asgardeo.tag.service.api.rest/org.wso2.identity.asgardeo.tag.service.api.rest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/components/tag-mgt/org.wso2.identity.asgardeo.tag.service.api.rest/org.wso2.identity.asgardeo.tag.service.api.rest.commons/org.wso2.identity.asgardeo.tag.service.api.rest.commons.iml" filepath="$PROJECT_DIR$/components/tag-mgt/org.wso2.identity.asgardeo.tag.service.api.rest/org.wso2.identity.asgardeo.tag.service.api.rest.commons/org.wso2.identity.asgardeo.tag.service.api.rest.commons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/components/tag-mgt/org.wso2.identity.asgardeo.tag.service.api.rest/org.wso2.identity.asgardeo.tag.service.api.rest.v1/org.wso2.identity.asgardeo.tag.service.api.rest.v1.iml" filepath="$PROJECT_DIR$/components/tag-mgt/org.wso2.identity.asgardeo.tag.service.api.rest/org.wso2.identity.asgardeo.tag.service.api.rest.v1/org.wso2.identity.asgardeo.tag.service.api.rest.v1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/components/tag-mgt/tag-mgt.iml" filepath="$PROJECT_DIR$/components/tag-mgt/tag-mgt.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,7 @@
+org.wso2.identity.asgardeo.tag.service
+org.wso2.identity.asgardeo.tag.service.constant
+org.wso2.identity.asgardeo.tag.service.dao
+org.wso2.identity.asgardeo.tag.service.exception
+org.wso2.identity.asgardeo.tag.service.internal
+org.wso2.identity.asgardeo.tag.service.internal.service.impl
+org.wso2.identity.asgardeo.tag.service.model

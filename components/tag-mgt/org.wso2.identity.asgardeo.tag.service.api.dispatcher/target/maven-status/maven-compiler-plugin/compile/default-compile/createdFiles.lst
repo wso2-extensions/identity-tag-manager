@@ -1,0 +1,4 @@
+org\wso2\identity\asgardeo\tag\service\api\dispatcher\InputValidationExceptionMapper.class
+org\wso2\identity\asgardeo\tag\service\api\dispatcher\DefaultExceptionMapper.class
+org\wso2\identity\asgardeo\tag\service\api\dispatcher\APIErrorExceptionMapper.class
+org\wso2\identity\asgardeo\tag\service\api\dispatcher\JsonProcessingExceptionMapper.class

@@ -1,0 +1,8 @@
+org\wso2\asgardeo\tag\service\api\rest\commons\error\ErrorDTO.class
+org\wso2\asgardeo\tag\service\api\rest\commons\Constants$ErrorMessages.class
+org\wso2\asgardeo\tag\service\api\rest\commons\Constants.class
+org\wso2\asgardeo\tag\service\api\rest\commons\error\APIError.class
+org\wso2\asgardeo\tag\service\api\rest\commons\ContextLoader.class
+org\wso2\asgardeo\tag\service\api\rest\commons\TagManagementDataHolder.class
+org\wso2\asgardeo\tag\service\api\rest\commons\error\ErrorResponse.class
+org\wso2\asgardeo\tag\service\api\rest\commons\error\ErrorResponse$Builder.class

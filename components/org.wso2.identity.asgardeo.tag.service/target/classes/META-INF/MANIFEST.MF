@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1641437861586
+Build-Jdk: 1.8.0_301
+Built-By: Mawli De Silva
+Bundle-Description: WSO2 is an open source application development softw
+ are company focused on providing service-oriented        architecture s
+ olutions for professional developers.
+Bundle-DocURL: http://www.wso2.org/
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: org.wso2.identity.asgardeo.tag.service
+Bundle-SymbolicName: org.wso2.identity.asgardeo.tag.service
+Bundle-Vendor: WSO2
+Bundle-Version: 0.0.1.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+DynamicImport-Package: org.wso2.config.mapper
+Export-Package: org.wso2.identity.asgardeo.tag.service;version="0.0.1.SN
+ APSHOT";uses:="org.wso2.identity.asgardeo.tag.service.exception,org.wso
+ 2.identity.asgardeo.tag.service.model",org.wso2.identity.asgardeo.tag.s
+ ervice.constant;version="0.0.1.SNAPSHOT",org.wso2.identity.asgardeo.tag
+ .service.dao;version="0.0.1.SNAPSHOT";uses:="org.wso2.identity.asgardeo
+ .tag.service.exception,org.wso2.identity.asgardeo.tag.service.model",or
+ g.wso2.identity.asgardeo.tag.service.exception;version="0.0.1.SNAPSHOT"
+ ;uses:="org.wso2.carbon.identity.base",org.wso2.identity.asgardeo.tag.s
+ ervice.internal.service.impl;version="0.0.1.SNAPSHOT",org.wso2.identity
+ .asgardeo.tag.service.model;version="0.0.1.SNAPSHOT"
+Import-Package: org.apache.commons.lang;version="[2.6.0,3.0.0)",org.wso2
+ .carbon.identity.base;version="[5.18.180,6.0.0)",org.osgi.framework;ver
+ sion="[1.7.0,2.0.0)",org.osgi.service.component;version="[1.2.0,2.0.0)"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-3.2.0.201605172007
