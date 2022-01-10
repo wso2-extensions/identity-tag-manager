@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, WSO2 Inc. (http://www.wso2.com).
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.com).
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -18,7 +18,9 @@
 
 package org.wso2.identity.asgardeo.tag.service.api.rest.v1;
 
-import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.*;
+import java.util.List;
+import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.ApplicationAssociationRequest;
+import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.PatchApplicationAssociation;
 import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.TagCreateRequest;
 import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.TagUpdateRequest;
 import javax.ws.rs.core.Response;
@@ -42,5 +44,5 @@ public interface TagsApiService {
 
       public Response patchTag(String tagId, TagUpdateRequest tagUpdateRequest);
 
-      public Response patchTagApplicationAssociations(String applicationId, PatchApplicationAssociationRequest patchApplicationAssociationRequest);
+      public Response patchTagApplicationAssociations(String applicationId, List<PatchApplicationAssociation> patchApplicationAssociation);
 }

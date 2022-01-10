@@ -619,6 +619,10 @@ components:
           example: true
           description: Whether the tag is visible to the end-user.
     PatchApplicationAssociationRequest:
+      type: array
+      items:
+            $ref: '#/components/schemas/PatchApplicationAssociation'
+    PatchApplicationAssociation:
       type: object
       properties:
         op:

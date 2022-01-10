@@ -96,9 +96,9 @@ public class TagsApiServiceImpl implements TagsApiService {
 
     @Override
     public Response patchTagApplicationAssociations(String applicationId,
-                                                    PatchApplicationAssociationRequest patchApplicationAssociationRequest) {
+                                                    List<PatchApplicationAssociation> patchApplicationAssociation) {
 
-        tagManagementApiService.patchTagApplicationAssociations(applicationId, patchApplicationAssociationRequest);
+        tagManagementApiService.patchTagApplicationAssociations(applicationId, patchApplicationAssociation);
         return Response.ok().build();
     }
 

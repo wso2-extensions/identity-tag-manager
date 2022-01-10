@@ -32,14 +32,66 @@ import java.util.Objects;
 import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
 
-public class ApplicationAssociationRequest  {
+public class PatchApplicationAssociation  {
   
+
+@XmlType(name="OpEnum")
+@XmlEnum(String.class)
+public enum OpEnum {
+
+    @XmlEnumValue("add") ADD(String.valueOf("add")), @XmlEnumValue("remove") REMOVE(String.valueOf("remove"));
+
+
+    private String value;
+
+    OpEnum(String v) {
+        value = v;
+    }
+
+    public String value() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
+
+    public static OpEnum fromValue(String value) {
+        for (OpEnum b : OpEnum.values()) {
+            if (b.value.equals(value)) {
+                return b;
+            }
+        }
+        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+}
+
+    private OpEnum op;
     private List<String> tagIds = null;
 
 
     /**
     **/
-    public ApplicationAssociationRequest tagIds(List<String> tagIds) {
+    public PatchApplicationAssociation op(OpEnum op) {
+
+        this.op = op;
+        return this;
+    }
+    
+    @ApiModelProperty(value = "")
+    @JsonProperty("op")
+    @Valid
+    public OpEnum getOp() {
+        return op;
+    }
+    public void setOp(OpEnum op) {
+        this.op = op;
+    }
+
+    /**
+    **/
+    public PatchApplicationAssociation tagIds(List<String> tagIds) {
 
         this.tagIds = tagIds;
         return this;
@@ -55,7 +107,7 @@ public class ApplicationAssociationRequest  {
         this.tagIds = tagIds;
     }
 
-    public ApplicationAssociationRequest addTagIdsItem(String tagIdsItem) {
+    public PatchApplicationAssociation addTagIdsItem(String tagIdsItem) {
         if (this.tagIds == null) {
             this.tagIds = new ArrayList<>();
         }
@@ -74,21 +126,23 @@ public class ApplicationAssociationRequest  {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ApplicationAssociationRequest applicationAssociationRequest = (ApplicationAssociationRequest) o;
-        return Objects.equals(this.tagIds, applicationAssociationRequest.tagIds);
+        PatchApplicationAssociation patchApplicationAssociation = (PatchApplicationAssociation) o;
+        return Objects.equals(this.op, patchApplicationAssociation.op) &&
+            Objects.equals(this.tagIds, patchApplicationAssociation.tagIds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tagIds);
+        return Objects.hash(op, tagIds);
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("class ApplicationAssociationRequest {\n");
+        sb.append("class PatchApplicationAssociation {\n");
         
+        sb.append("    op: ").append(toIndentedString(op)).append("\n");
         sb.append("    tagIds: ").append(toIndentedString(tagIds)).append("\n");
         sb.append("}");
         return sb.toString();

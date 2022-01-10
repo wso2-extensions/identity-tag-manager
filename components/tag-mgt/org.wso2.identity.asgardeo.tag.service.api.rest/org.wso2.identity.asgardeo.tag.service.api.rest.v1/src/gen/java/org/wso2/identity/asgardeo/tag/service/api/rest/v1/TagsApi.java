@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, WSO2 Inc. (http://www.wso2.com).
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.com).
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -19,17 +19,22 @@
 package org.wso2.identity.asgardeo.tag.service.api.rest.v1;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import java.io.InputStream;
+import java.util.List;
 
 import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.ApplicationAssociationRequest;
 import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.ApplicationAssociationResponse;
-import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.ApplicationAssoicationRequest;
 import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.Error;
-import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.PatchApplicationAssociationRequest;
+import java.util.List;
+import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.PatchApplicationAssociation;
 import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.TagCreateRequest;
 import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.TagListResponse;
 import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.TagResponse;
 import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.TagTypeListResponse;
 import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.TagUpdateRequest;
+import org.wso2.identity.asgardeo.tag.service.api.rest.v1.TagsApiService;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -252,9 +257,9 @@ public class TagsApi  {
         @ApiResponse(code = 403, message = "Forbidden", response = Void.class),
         @ApiResponse(code = 500, message = "Server Error", response = Error.class)
     })
-    public Response patchTagApplicationAssociations(@ApiParam(value = "Application uuid.",required=true) @PathParam("application-id") String applicationId, @ApiParam(value = "This represents the request to add/delete the associations of an application with tags." ,required=true) @Valid PatchApplicationAssociationRequest patchApplicationAssociationRequest) {
+    public Response patchTagApplicationAssociations(@ApiParam(value = "Application uuid.",required=true) @PathParam("application-id") String applicationId, @ApiParam(value = "This represents the request to add/delete the associations of an application with tags." ,required=true) @Valid List<PatchApplicationAssociation> patchApplicationAssociation) {
 
-        return delegate.patchTagApplicationAssociations(applicationId,  patchApplicationAssociationRequest );
+        return delegate.patchTagApplicationAssociations(applicationId,  patchApplicationAssociation );
     }
 
 }

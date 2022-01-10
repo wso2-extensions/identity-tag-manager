@@ -35,6 +35,7 @@ import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.ApplicationAssociationRequest;
+import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.PatchApplicationAssociation;
 import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.PatchApplicationAssociationRequest;
 import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.TagCreateRequest;
 import org.wso2.identity.asgardeo.tag.service.api.rest.v1.model.TagListItem;
@@ -254,17 +255,20 @@ public class TagManagementAPIService {
      * Patch tag-resource association.
      *
      * @param applicationId                      Tag data.
-     * @param patchApplicationAssociationRequest List of UUIDs of tags for the associations along with the operation(add/remove).
+     * @param patchApplicationAssociationRequest List of objects for the associations along with the
+     *                                           operation(add/remove) and tag Ids.
      */
     public void patchTagApplicationAssociations(String applicationId,
-                                                PatchApplicationAssociationRequest patchApplicationAssociationRequest) {
+                                                List<PatchApplicationAssociation> patchApplicationAssociationRequest) {
 
         try {
-            for (String tagUuid : patchApplicationAssociationRequest.getTagIds()) {
-                if (patchApplicationAssociationRequest.getOp().value().equals("add")) {
-                    TagManagementDataHolder.getTagManagementService().addAssociation(tagUuid, applicationId);
-                } else if (patchApplicationAssociationRequest.getOp().value().equals("remove"))
-                    TagManagementDataHolder.getTagManagementService().deleteAssociation(tagUuid, applicationId);
+            for (PatchApplicationAssociation patchApplicationAssociation : patchApplicationAssociationRequest) {
+                for (String tagUuid : patchApplicationAssociation.getTagIds()) {
+                    if (patchApplicationAssociation.getOp().value().equals("add")) {
+                        TagManagementDataHolder.getTagManagementService().addAssociation(tagUuid, applicationId);
+                    } else if (patchApplicationAssociation.getOp().value().equals("remove"))
+                        TagManagementDataHolder.getTagManagementService().deleteAssociation(tagUuid, applicationId);
+                }
             }
         } catch (TagServiceException e) {
             throw handleException(e, Constants.ErrorMessages.ERROR_UNABLE_TO_REMOVE_ASSOCIATION);
