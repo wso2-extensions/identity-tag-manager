@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2022, WSO2 Inc. (http://www.wso2.com).
+  ~
+  ~ WSO2 Inc. licenses this file to you under the Apache License,
+  ~ Version 2.0 (the "License"); you may not use this file except
+  ~ in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -10,13 +28,14 @@
         <version>1.4</version>
     </parent>
 
-    <groupId>org.wso2.identity.asgardeo.tag.service</groupId>
+    <groupId>org.wso2.carbon.identity.tag.manager</groupId>
     <artifactId>identity-tag-manager</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>components/tag-mgt</module>
-        <module>components/org.wso2.identity.asgardeo.tag.service</module>
+        <module>components/org.wso2.carbon.identity.tag.manager</module>
+        <module>components/org.wso2.carbon.identity.tag.manager.core</module>
     </modules>
 
     <dependencyManagement>
@@ -38,18 +57,8 @@
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.utils</artifactId>
-                <version>${carbon.kernel.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.user.api</artifactId>
                 <version>${carbon.kernel.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.wso2.identity.asgardeo.user.manager</groupId>
-                <artifactId>com.wso2.identity.asgardeo.realm.config.builder</artifactId>
-                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.swagger</groupId>
@@ -62,29 +71,9 @@
                 <version>${springframework.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-core</artifactId>
-                <version>${tomcat-embed.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-el</artifactId>
-                <version>${tomcat-embed.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-websocket</artifactId>
-                <version>${tomcat-embed.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.datasources</groupId>
@@ -95,11 +84,6 @@
                 <groupId>org.wso2.carbon.config</groupId>
                 <artifactId>org.wso2.carbon.config</artifactId>
                 <version>${carbon.config.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -130,16 +114,6 @@
                 <groupId>org.wso2.config.mapper</groupId>
                 <artifactId>config-mapper</artifactId>
                 <version>${config.mapper.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-                <version>${cxf-bundle.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-rs-service-description</artifactId>
-                <version>${cxf-bundle.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.ws.rs</groupId>
@@ -190,13 +164,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.jacoco</groupId>
-                <artifactId>org.jacoco.agent</artifactId>
-                <classifier>runtime</classifier>
-                <version>${jacoco.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-testng</artifactId>
                 <version>${org.powermock.version}</version>
@@ -231,18 +198,18 @@
                 <version>${p6spy.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.identity.asgardeo.tag.service</groupId>
-                <artifactId>org.wso2.identity.asgardeo.tag.service.api.rest.v1</artifactId>
+                <groupId>org.wso2.carbon.identity.tag.manager</groupId>
+                <artifactId>org.wso2.carbon.identity.tag.manager.api.rest.v1</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.identity.asgardeo.tag.service</groupId>
-                <artifactId>org.wso2.identity.asgardeo.tag.service.api.rest.commons</artifactId>
+                <groupId>org.wso2.carbon.identity.tag.manager</groupId>
+                <artifactId>org.wso2.carbon.identity.tag.manager.api.rest.commons</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.identity.asgardeo.tag.service</groupId>
-                <artifactId>org.wso2.identity.asgardeo.tag.service</artifactId>
+                <groupId>org.wso2.carbon.identity.tag.manager</groupId>
+                <artifactId>org.wso2.carbon.identity.tag.manager</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -317,11 +284,6 @@
                             <SCM-Revision>${buildNumber}</SCM-Revision>
                         </instructions>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>${jacoco.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -427,10 +389,6 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
 
-        <!--Carbon Multi Tenancy-->
-        <carbon.multitenancy.version>4.9.14</carbon.multitenancy.version>
-        <carbon.multitenancy.imp.pkg.version>[4.9.8, 5.0.0)</carbon.multitenancy.imp.pkg.version>
-
         <!--Carbon Identity Framework-->
         <carbon.identity.framework.version>5.18.187</carbon.identity.framework.version>
         <carbon.identity.framework.imp.pkg.version.range>[5.18.180, 6.0.0)
@@ -453,7 +411,6 @@
         <carbon.commons.imp.pkg.version>[4.7.2, 5.0.0)</carbon.commons.imp.pkg.version>
 
         <commons-lang3.version>3.10</commons-lang3.version>
-        <commons-io.version>2.6</commons-io.version>
         <httpclient.version>4.5.13</httpclient.version>
         <cxf.cors.version>3.3.4</cxf.cors.version>
         <org.codehaus.jackson.version>1.8.6</org.codehaus.jackson.version>
@@ -462,9 +419,7 @@
         <swagger.jaxrs.version>1.6.2</swagger.jaxrs.version>
         <springframework.version>5.2.5.RELEASE</springframework.version>
         <spring-boot.version>2.3.0.RELEASE</spring-boot.version>
-        <tomcat-embed.version>9.0.53</tomcat-embed.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
-        <nimbus.oauth2.version>7.3</nimbus.oauth2.version>
         <cxf-bundle.version>3.3.7</cxf-bundle.version>
         <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
         <json.wso2.version>3.0.0.wso2v1</json.wso2.version>
@@ -488,9 +443,7 @@
 
         <!-- Unit test versions -->
         <testng.version>6.9.10</testng.version>
-        <jacoco.version>0.8.2</jacoco.version>
         <org.powermock.version>1.7.4</org.powermock.version>
-        <junit.version>4.9</junit.version>
 
         <!-- Rest API test versions -->
         <rest.assured.version>4.2.0</rest.assured.version>

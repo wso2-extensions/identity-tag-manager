@@ -1,0 +1,672 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: WSO2 Identity Server - Tag Management Rest API
+  description: >
+    This document specifies a **RESTFUL API** for **Tag Management** in **WSO2 Identity Server**.
+  contact:
+    name: WSO2 Identity Server
+    url: 'https://wso2.com/identity-and-access-management/'
+    email: architecture@wso2.org
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  - url: 'https://{server-url}/t/{tenant-domain}/api/identity-tag-mgt/v1'
+    variables:
+      tenant-domain:
+        default: "carbon.super"
+      server-url:
+        default: "localhost:9443"
+security:
+  - OAuth2: []
+  - BasicAuth: []
+
+paths:
+  /tags:
+    post:
+      tags:
+        - Tags
+      summary: |
+        Create a tag.
+      operationId: createTag
+      description: >
+        This API provides the capability to store the tag information that is provided by users.
+
+          <b>Permission required:</b>
+          * /permission/admin/manage/identity/tagmgt/create
+
+          <b>Scope required:</b>
+          * internal_tag_mgt_create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagCreateRequest'
+        description: This represents the request to create a tag.
+        required: true
+      responses:
+        '201':
+          description: "Successful response"
+          headers:
+            Location:
+              description: This denotes the location of the newly-created tag.
+              schema:
+                type: string
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: "Unauthorized"
+        '403':
+          description: "Forbidden"
+        '409':
+          description: "Conflict"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: "Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      tags:
+        - Tags
+      operationId: filterTags
+      summary: |
+        Filter tags.
+      description: |
+        This API provides the capability to retrieve a filtered list of tags by name and tag type. If the pagination parameters are not provided, the default values will be used.
+
+          <b>Permission required:</b>
+          * /permission/admin/manage/identity/tagmgt/view
+
+          <b>Scope required:</b>
+          * internal_tag_mgt_view
+      parameters:
+        - $ref: '#/components/parameters/limitQueryParam'
+        - $ref: '#/components/parameters/offsetQueryParam'
+        - $ref: '#/components/parameters/filterQueryParam'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagListResponse'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: "Unauthorized"
+        '403':
+          description: "Forbidden"
+        '404':
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: "Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/tags/{tag-id}':
+    get:
+      tags:
+        - Tags
+      operationId: getTag
+      summary: |
+        Get tag by ID.
+      description: |
+        This API provides the capability to retrieve a tag by the unique identifier.
+
+          <b>Permission required:</b>
+          * /permission/admin/manage/identity/tagmgt/view
+
+          <b>Scope required:</b> <br>
+          * internal_tag_mgt_view
+      parameters:
+        - $ref: '#/components/parameters/tagIdPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagResponse'
+        '400':
+          description: Invalid tag Ids.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Server Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags:
+        - Tags
+      summary: |
+        Partially update tag by ID.
+      operationId: patchTag
+      description: |
+        This API provides the capability to update a tag by the unique identifier.
+
+        <b>Permission required:</b>
+          * /permission/admin/manage/identity/tagmgt/update
+
+        <b>Scope required:</b> <br>
+        * internal_tag_mgt_update
+      parameters:
+        - $ref: '#/components/parameters/tagIdPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagUpdateRequest'
+        description: "This represents the tag update request"
+        required: true
+      responses:
+        '200':
+          description: "Successfully Updated"
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: "Unauthorized"
+        '403':
+          description: "Forbidden"
+        '500':
+          description: "Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Tags
+      summary: |
+        Delete tag by ID.
+      operationId: deleteTag
+      description: |
+        This API provides the capability to delete a tag by the unique identifier.
+
+        <b>Permission required:</b>
+          * /permission/admin/manage/identity/tagmgt/delete
+
+        <b>Scope required:</b> <br>
+        * internal_tag_mgt_delete
+      parameters:
+        - $ref: '#/components/parameters/tagIdPathParam'
+      responses:
+        '200':
+          description: "Successfully Deleted"
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: "Unauthorized"
+        '403':
+          description: "Forbidden"
+        '500':
+          description: "Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/tags/type':
+    get:
+      tags:
+        - Tags
+      operationId: getTagsTypes
+      summary: |
+        List tag types.
+      description: |
+        This API provides the capability to retrieve the list of tag types supported by the server.
+
+          <b>Permission required:</b>
+          * /permission/admin/manage/identity/tagmgt/view
+
+          <b>Scope required:</b>
+          * internal_tag_mgt_view
+      parameters:
+        - $ref: '#/components/parameters/limitQueryParam'
+        - $ref: '#/components/parameters/offsetQueryParam'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagTypeListResponse'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: "Unauthorized"
+        '403':
+          description: "Forbidden"
+        '404':
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: "Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/tags/applications/{application-id}':
+    post:
+      tags:
+        - Application-Tag Associations
+      summary: |
+        Associate tags with the application.
+      operationId: associateWithApplication
+      description: |
+        This API provides the capability to associate the application with the given set of tags. 
+
+        **NOTE:** 
+        * Only the application tags can be associated using this API.
+        * Application Update permissions are required.
+
+
+          <b>Permission required:</b>
+          * /permission/admin/manage/identity/applicationmgt/update
+
+          <b>Scope required:</b> <br>
+          * internal_application_mgt_update
+      parameters:
+        - $ref: '#/components/parameters/applicationIdPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationAssociationRequest'
+        description: This represents the request to associate an application with a tag.
+        required: true
+      responses:
+        '201':
+          description: "Successful response"
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: "Unauthorized"
+        '403':
+          description: "Forbidden"
+        '409':
+          description: "Conflict"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: "Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags:
+        - Application-Tag Associations
+      summary: |
+        Add/remove bulk tag-application associations.
+      operationId: patchTagApplicationAssociations
+
+      description: |
+        This API provides the capability to add/remove associations of an application with the given set of tags. 
+
+        **NOTE:** 
+        * Application Update permissions are required.
+
+
+          <b>Permission required:</b>
+          * /permission/admin/manage/identity/applicationmgt/update
+
+          <b>Scope required:</b> <br>
+          * internal_application_mgt_update
+      parameters:
+        - $ref: '#/components/parameters/applicationIdPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchApplicationAssociationRequest'
+
+        description: This represents the request to add/delete the associations of an application with tags.
+        required: true
+      responses:
+        '200':
+          description: "Successfully updated"
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: "Unauthorized"
+        '403':
+          description: "Forbidden"
+        '500':
+          description: "Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      tags:
+        - Application-Tag Associations
+      summary: |
+        Get associated tags for the application.
+      operationId: getApplicationTags
+      description: |
+        This API provides the capability to retrieve the tags associated with the given application.
+
+        **NOTE:** 
+        * Application view permissions are required.
+
+
+          <b>Permission required:</b>
+          * /permission/admin/manage/identity/applicationmgt/view
+
+          <b>Scope required:</b> <br>
+          * internal_application_mgt_view
+      parameters:
+        - $ref: '#/components/parameters/applicationIdPathParam'
+      responses:
+        '200':
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationAssociationResponse'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: "Unauthorized"
+        '403':
+          description: "Forbidden"
+        '500':
+          description: "Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: 'https://localhost:9443/oauth2/authorize'
+          tokenUrl: 'http://localhost:9443/oauth2/token'
+          scopes: {}
+  parameters:
+    applicationIdPathParam:
+      in: path
+      name: application-id
+      description: Application uuid.
+      required: true
+      schema:
+        type: string
+        example: "85e3f4b8-0d22-4181-b1e3-1651f71b88bd"
+    tagIdPathParam:
+      in: path
+      name: tag-id
+      description: Tag uuid.
+      required: true
+      schema:
+        type: string
+        example: "sdbcsdbca2-0d22-4181-b1e3-1651sdv1b88bd"
+    limitQueryParam:
+      in: query
+      name: limit
+      required: false
+      description: |
+        Maximum number of records to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+    offsetQueryParam:
+      in: query
+      name: offset
+      required: false
+      description: |
+        Number of records to skip for pagination.
+      schema:
+        type: integer
+        default: 0
+    filterQueryParam:
+      in: query
+      name: filter
+      required: false
+      description: |
+        Condition to filter the retrieval of records. Supports 'sw', 'co', 'ew' and 'eq' operations. Currently supports filtering based on the 'name' and 'type' attributes.
+        /tags?filter=name+co+test&filter=type+eq+APPLICATION
+      schema:
+        type: string
+  schemas:
+    TagListResponse:
+      type: object
+      properties:
+        totalResults:
+          type: integer
+          description: "Number of results that matches the list operation."
+          example: 1
+        startIndex:
+          type: integer
+          description: "Index of the first element of the page, which will be equal to offset + 1."
+          example: 1
+        count:
+          type: integer
+          description: "Number of elements in the returned page."
+          example: 10
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagListItem'
+    TagResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "scsbcj-2rfjeiu=243434-dvhjduvbjfvd"
+          readOnly: true
+          description: Unique identifier of the tag.
+        name:
+          type: string
+          example: example-tag
+          description: Name of the tag.
+        description:
+          type: string
+          example: This is an example tag
+          description: Description about the tag.
+        typeId:
+          type: string
+          example: "djhfvbjhdhjvbjhdf-eub3fhj-24376f3rf"
+          description: Unique identifier of the type of the tag.
+        isPublic:
+          type: boolean
+          example: true
+          description: Whether the tag is visible to the end-user.
+    TagListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "85e3f4b8-0d22-4181-b1e3-1651f71b88bd"
+          description: Unique identifier of the tag.
+        name:
+          type: string
+          example: "example-tag"
+          description: Name of the tag.
+        isPublic:
+          type: boolean
+          example: true
+          description: Whether the tag is visible to the end-user.
+    TagTypeListResponse:
+      type: object
+      properties:
+        totalResults:
+          type: integer
+          description: "Number of results that matches the list operation."
+          example: 1
+        startIndex:
+          type: integer
+          description: "Index of the first element of the page, which will be equal to offset + 1."
+          example: 1
+        count:
+          type: integer
+          description: "Number of elements in the returned page."
+          example: 10
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagTypeListItem'
+    TagTypeListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "85e3f4b8-0d22-4181-b1e3-1651f71b88bd"
+          description: Unique identifier of the tag.
+        name:
+          type: string
+          example: "example-tag"
+          description: Name of the tag.
+    TagCreateRequest:
+      type: object
+      required:
+        - name
+        - type
+        - isPublic
+      properties:
+        name:
+          type: string
+          example: example-tag
+          description: Unique identifier of the tag.
+        description:
+          type: string
+          example: This is an example tag.
+          description: Description about the tag.
+        type:
+          type: string
+          example: APPLICATION
+          description: Type of the tag.
+          enum:
+            - APPLICATION
+            - IDP
+        isPublic:
+          type: boolean
+          example: true
+          description: Whether the tag is visible to the end-user.
+    TagUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: example-tag.
+          description: Unique identifier of the tag.
+        description:
+          type: string
+          example: This is an example tag.
+          description: Description about the tag.
+        isPublic:
+          type: boolean
+          example: true
+          description: Whether the tag is visible to the end-user.
+    PatchApplicationAssociationRequest:
+      type: array
+      items:
+            $ref: '#/components/schemas/PatchApplicationAssociation'
+    PatchApplicationAssociation:
+      type: object
+      properties:
+        op:
+          type: string
+          enum: ["add", "remove"]
+        tagIds:
+          type: array
+          items:
+            type: string
+            example: fghdj-26780gh-5tgcehwiu-ghsdj
+            readOnly: true
+            description: UUId of the tag.
+    ApplicationAssociationRequest:
+      type: object
+      properties:
+        tagIds:
+          type: array
+          items:
+            type: string
+            example: fghdj-26780gh-5tgcehwiu-ghsdj
+            readOnly: true
+            description: UUId of the tag.
+
+    ApplicationAssociationResponse:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagListItem'
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          example: AAA-00000
+        message:
+          type: string
+          example: Some error message.
+        description:
+          type: string
+          example: Some error description.
+        traceId:
+          type: string
+          example: e0fbcfeb-3617-43c4-8dd0-7b7d38e13047
+
+ 
