@@ -39,18 +39,17 @@ import org.wso2.carbon.user.core.service.RealmService;
         name = "org.wso2.identity.tag.manager.service.component",
         immediate = true
 )
-public class TagServiceComponent {
+public class TagManagementServiceComponent {
 
     private static final Log
-            LOG = LogFactory.getLog(TagServiceComponent.class);
+            LOG = LogFactory.getLog(TagManagementServiceComponent.class);
 
     @Activate
     protected void activate(ComponentContext ctxt) {
 
         try {
             BundleContext bundleContext = ctxt.getBundleContext();
-            bundleContext.registerService(TagManagementService.class,new TagManagementServiceImpl(),null);
-
+            bundleContext.registerService(TagManagementService.class, new TagManagementServiceImpl(), null);
             LOG.info("TagManagementService service component activated successfully.");
         } catch (Exception e) {
             LOG.error("Failed to activate TagManagementService service component.", e);
@@ -60,7 +59,9 @@ public class TagServiceComponent {
     @Deactivate
     protected void deactivate(ComponentContext context) {
 
-        LOG.info("TagManagementService bundle is deactivated");
+        if (LOG.isDebugEnabled()) {
+            LOG.info("TagManagementService bundle is deactivated");
+        }
     }
 
     @Reference(
@@ -71,11 +72,11 @@ public class TagServiceComponent {
             unbind = "unsetRealmService")
     protected void setRealmService(RealmService realmService) {
 
-        TagServiceDataHolder.setRealmService(realmService);
+        TagManagementServiceDataHolder.setRealmService(realmService);
     }
 
     protected void unsetRealmService(RealmService realmService) {
 
-        TagServiceDataHolder.setRealmService(null);
+        TagManagementServiceDataHolder.setRealmService(null);
     }
 }

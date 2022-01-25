@@ -23,7 +23,6 @@ import org.wso2.carbon.identity.tag.manager.model.Tag;
 import org.wso2.carbon.identity.tag.manager.model.TagAssociationsResult;
 import org.wso2.carbon.identity.tag.manager.model.TagListResult;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -42,17 +41,6 @@ public interface TagManagementDAO {
     Tag loadTag(String tagUuid, String tenantUuid) throws TagServiceException;
 
     /**
-     * Retrieve tag data with the given name and tag type in the given tenant.
-     *
-     * @param name       Name of the tag.
-     * @param type       Type of the tag.
-     * @param tenantUuid UUID of the tenant.
-     * @return Tag.
-     * @throws TagServiceException If an error occurred while getting the tag attributes.
-     */
-    Tag loadTag(String name, String type, String tenantUuid) throws TagServiceException;
-
-    /**
      * Filter a list of tags by type and name.
      *
      * @param limit      Number of results to be retrieved.
@@ -68,14 +56,14 @@ public interface TagManagementDAO {
             throws TagServiceException;
 
     /**
-     * Retrieve a list of tag types..
+     * Retrieve a list of tag types.
      *
      * @param limit     Number of results to be retrieved.
      * @param offset    Offset.
      * @param sortBy    Sort by.
      * @param sortOrder Sort order.
-     * @return list of Strings
-     * @throws TagServiceException If an error occurred while getting the tag attributes.
+     * @return list of Strings.
+     * @throws TagServiceException If an error occurred while getting the tag types.
      */
     List<String> loadTagTypes(int limit, int offset, String sortBy, String sortOrder) throws TagServiceException;
 
@@ -137,7 +125,7 @@ public interface TagManagementDAO {
      * @return TagAssociationsResult.
      * @throws TagServiceException If an error occurred while getting the associations.
      */
-    TagAssociationsResult loadTagAssociationsByResourceId(String resourceUuid) throws TagServiceException, SQLException;
+    TagAssociationsResult loadTagAssociationsByResourceId(String resourceUuid) throws TagServiceException;
 
     /**
      * Delete all tag associations for the given resource.
@@ -150,21 +138,32 @@ public interface TagManagementDAO {
     /**
      * Determine whether a tag is existing with the given tag UUID.
      *
-     * @param tagUuid UUID of the Tag
+     * @param tagUuid UUID of the Tag.
      * @return Whether a tag is existing with the given tag UUID.
      * @throws TagServiceException If an error occurred while checking the tag existence.
      */
     boolean isExistingTagId(String tagUuid) throws TagServiceException;
 
     /**
-     * Determine whether a tag is existing with the given tag UUID.
+     * Determine whether a tag is existing with the given tag name and type.
      *
-     * @param tagUuid UUID of the Tag.
-     * @param resourceId UUID of the resource.
-     * @return Whether an association is existing between the given tag and resource.
+     * @param name       Name of the Tag.
+     * @param type       Type of the Tag.
+     * @param tenantUuid UUID of the tenant.
+     * @return Whether a tag is existing with the given tag name and type.
      * @throws TagServiceException If an error occurred while checking the tag existence.
      */
-    boolean isExistingAssociation(String tagUuid,String resourceId) throws TagServiceException;
+    boolean isExistingTag(String name, String type, String tenantUuid) throws TagServiceException;
+
+    /**
+     * Determine whether a tag association is existing with the given tag and resource UUID.
+     *
+     * @param tagUuid    UUID of the Tag.
+     * @param resourceId UUID of the resource.
+     * @return Whether an association is existing between the given tag and resource.
+     * @throws TagServiceException If an error occurred while checking the tag association existence.
+     */
+    boolean isExistingAssociation(String tagUuid, String resourceId) throws TagServiceException;
 
     /**
      * Delete tags by tenant UUID.

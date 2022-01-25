@@ -25,17 +25,16 @@ import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.tag.manager.TagManagementService;
 import org.wso2.carbon.identity.tag.manager.core.dao.DAOFactory;
 import org.wso2.carbon.identity.tag.manager.core.dao.TagManagementDAO;
-import org.wso2.carbon.identity.tag.manager.core.internal.TagServiceDataHolder;
+import org.wso2.carbon.identity.tag.manager.core.internal.TagManagementServiceDataHolder;
 import org.wso2.carbon.identity.tag.manager.exception.TagServiceClientException;
 import org.wso2.carbon.identity.tag.manager.exception.TagServiceException;
-import org.wso2.carbon.identity.tag.manager.model.ErrorMessage;
+import org.wso2.carbon.identity.tag.manager.core.constant.TagMgtConstants.ErrorMessage;
 import org.wso2.carbon.identity.tag.manager.model.Tag;
 import org.wso2.carbon.identity.tag.manager.model.TagAssociationsResult;
 import org.wso2.carbon.identity.tag.manager.model.TagListResult;
 import org.wso2.carbon.user.api.Tenant;
 import org.wso2.carbon.user.api.UserStoreException;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -60,14 +59,14 @@ public class TagManagementServiceImpl implements TagManagementService {
         }
         TagManagementDAO tagManagementDAO = DAOFactory.getInstance().getTagManagementDAO();
         // Check if tag already existing.
-        if (tagManagementDAO.loadTag(tag.getName(), tag.getType(), tenantUuid) != null) {
+        if (tagManagementDAO.isExistingTag(tag.getName(), tag.getType(), tenantUuid)) {
             throw new TagServiceClientException(ErrorMessage.ERROR_CODE_TAG_ALREADY_EXISTS.getCode(),
                     String.format(ErrorMessage.ERROR_CODE_TAG_ALREADY_EXISTS.getMessage(), tag.getName(),
                             tenantUuid));
         }
         String tagUuid = tagManagementDAO.storeTag(tag, tenantUuid);
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Provided JSON request content is not in the valid format:");
+            LOG.debug("Retrieved tag UUID: " + tagUuid);
         }
         return tagUuid;
     }
@@ -93,11 +92,26 @@ public class TagManagementServiceImpl implements TagManagementService {
     @Override
     public List<String> getTagTypes(int limit, int offset, String sortBy, String sortOrder) throws TagServiceException {
 
-        List<String> tagList;
-        handleSorting(sortBy,sortOrder);
+        if (limit < 0) {
+            throw new TagServiceClientException(ErrorMessage.ERROR_CODE_INVALID_LIMIT_VALUE.getCode(),
+                    ErrorMessage.ERROR_CODE_INVALID_LIMIT_VALUE.getMessage());
+        }
+        if (offset < 0) {
+            throw new TagServiceClientException(ErrorMessage.ERROR_CODE_INVALID_OFFSET_VALUE.getCode(),
+                    ErrorMessage.ERROR_CODE_INVALID_OFFSET_VALUE.getMessage());
+        }
+        List<String> tagTypes;
+        handleSorting(sortBy, sortOrder);
         TagManagementDAO tagManagementDAO = DAOFactory.getInstance().getTagManagementDAO();
-        tagList = tagManagementDAO.loadTagTypes(limit, offset, sortBy, sortOrder);
-        return tagList;
+        tagTypes = tagManagementDAO.loadTagTypes(limit, offset, sortBy, sortOrder);
+        if (tagTypes == null) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Tags have not been defined yet.");
+            }
+            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_EMPTY_TAG_TYPES_LIST.getCode(),
+                    ErrorMessage.ERROR_CODE_INVALID_LIMIT_VALUE.getMessage());
+        }
+        return tagTypes;
     }
 
     @Override
@@ -114,8 +128,12 @@ public class TagManagementServiceImpl implements TagManagementService {
             throw new TagServiceClientException(ErrorMessage.ERROR_CODE_INVALID_OFFSET_VALUE.getCode(),
                     ErrorMessage.ERROR_CODE_INVALID_OFFSET_VALUE.getMessage());
         }
-        handleSorting(sortBy,sortOrder);
-        //TODO do filter validation
+        handleSorting(sortBy, sortOrder);
+
+        if (StringUtils.isBlank(filter)) {
+            throw new TagServiceClientException(ErrorMessage.ERROR_CODE_EMPTY_FILTER_VALUE.getCode(),
+                    ErrorMessage.ERROR_CODE_EMPTY_FILTER_VALUE.getMessage());
+        }
         tagListResult = tagManagementDAO.filterTags(limit, offset, null, null, filter, tenantUuid);
         return tagListResult;
     }
@@ -158,32 +176,28 @@ public class TagManagementServiceImpl implements TagManagementService {
     @Override
     public void addAssociation(String tagUuid, String resourceUuid) throws TagServiceException {
 
-        //TODO validate the resource type/uuid
-        TagManagementDAO tagManagementDAO = DAOFactory.getInstance().getTagManagementDAO();
-        if (StringUtils.isNotBlank(tagUuid) && StringUtils.isNotBlank(resourceUuid)) {
-            tagManagementDAO.storeAssociation(tagUuid, resourceUuid, tenantUuid);
-        } else {
+        if (StringUtils.isBlank(tagUuid)) {
             throw new TagServiceClientException(ErrorMessage.ERROR_CODE_EMPTY_TAG_ID.getCode(),
                     ErrorMessage.ERROR_CODE_EMPTY_TAG_ID.getMessage());
         }
-    }
-
-    @Override
-    public TagAssociationsResult getTagAssociationsByResourceId(
-            String resourceUuid) throws TagServiceException {
-
-        TagAssociationsResult tagAssociationsResult;
-        TagManagementDAO tagManagementDAO = DAOFactory.getInstance().getTagManagementDAO();
         if (StringUtils.isBlank(resourceUuid)) {
             throw new TagServiceClientException(ErrorMessage.ERROR_CODE_EMPTY_RESOURCE_UUID.getCode(),
                     ErrorMessage.ERROR_CODE_EMPTY_RESOURCE_UUID.getMessage());
         }
-        try {
-            tagAssociationsResult = tagManagementDAO.loadTagAssociationsByResourceId(resourceUuid);
-        } catch (SQLException e) {
-            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_GETTING_ASSOCIATIONS.getCode(),
-                    ErrorMessage.ERROR_CODE_ERROR_GETTING_ASSOCIATIONS.getMessage(), e);
+        TagManagementDAO tagManagementDAO = DAOFactory.getInstance().getTagManagementDAO();
+        tagManagementDAO.storeAssociation(tagUuid, resourceUuid, tenantUuid);
+    }
+
+    @Override
+    public TagAssociationsResult getTagAssociationsByResourceId(String resourceUuid) throws TagServiceException {
+
+        if (StringUtils.isBlank(resourceUuid)) {
+            throw new TagServiceClientException(ErrorMessage.ERROR_CODE_EMPTY_RESOURCE_UUID.getCode(),
+                    ErrorMessage.ERROR_CODE_EMPTY_RESOURCE_UUID.getMessage());
         }
+        TagAssociationsResult tagAssociationsResult;
+        TagManagementDAO tagManagementDAO = DAOFactory.getInstance().getTagManagementDAO();
+        tagAssociationsResult = tagManagementDAO.loadTagAssociationsByResourceId(resourceUuid);
         return tagAssociationsResult;
     }
 
@@ -224,9 +238,9 @@ public class TagManagementServiceImpl implements TagManagementService {
 
         try {
             int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
-            Tenant tenant = TagServiceDataHolder.getRealmService().getTenantManager().getTenant(tenantId);
+            Tenant tenant = TagManagementServiceDataHolder.getRealmService().getTenantManager().getTenant(tenantId);
             if (tenant == null) {
-                throw new TagServiceClientException(ErrorMessage.ERROR_INVALID_TENANT_ID.getCode(),
+                throw new TagServiceException(ErrorMessage.ERROR_INVALID_TENANT_ID.getCode(),
                         String.format(ErrorMessage.ERROR_INVALID_TENANT_ID.getMessage(), tenantId));
             }
             String tenantUuid = tenant.getTenantUniqueID();
@@ -255,7 +269,6 @@ public class TagManagementServiceImpl implements TagManagementService {
 
     private boolean isTagNameValid(String name) {
 
-        //TODO introduce a regex pattern for the tag name
         if (StringUtils.isBlank(name)) {
             return false;
         }

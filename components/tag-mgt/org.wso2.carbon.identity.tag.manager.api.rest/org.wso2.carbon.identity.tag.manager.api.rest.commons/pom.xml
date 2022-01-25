@@ -91,7 +91,7 @@
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.identity.tag.manager</groupId>
-            <artifactId>org.wso2.carbon.identity.tag.manager</artifactId>
+            <artifactId>org.wso2.carbon.identity.tag.manager.core</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>

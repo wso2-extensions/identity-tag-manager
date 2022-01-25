@@ -24,7 +24,7 @@ import org.wso2.carbon.user.core.service.RealmService;
 /**
  * This class acts as a data holder to the tag service manager.
  */
-public class TagServiceDataHolder {
+public class TagManagementServiceDataHolder {
 
     private static RealmService realmService;
     public static TagManagementService tagManagementService;
@@ -50,7 +50,7 @@ public class TagServiceDataHolder {
      */
     public static void setRealmService(RealmService realmService) {
 
-        org.wso2.carbon.identity.tag.manager.core.internal.TagServiceDataHolder.realmService = realmService;
+        TagManagementServiceDataHolder.realmService = realmService;
     }
 
     /**
@@ -74,6 +74,6 @@ public class TagServiceDataHolder {
      */
     public static void setTagManagementService(TagManagementService tagManagementService) {
 
-        org.wso2.carbon.identity.tag.manager.core.internal.TagServiceDataHolder.tagManagementService = tagManagementService;
+        TagManagementServiceDataHolder.tagManagementService = tagManagementService;
     }
 }

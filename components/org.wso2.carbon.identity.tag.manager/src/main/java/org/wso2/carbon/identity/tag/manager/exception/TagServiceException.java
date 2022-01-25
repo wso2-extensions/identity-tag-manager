@@ -30,33 +30,10 @@ public class TagServiceException extends IdentityException {
     private static final long serialVersionUID = 1700334648018222520L;
 
     /**
-     * Constructs a new exception with the specified detail message.
-     *
-     * @param message The detail message
-     */
-    public TagServiceException(String message) {
-
-        super(message);
-        this.setErrorCode(getDefaultErrorCode());
-    }
-
-    /**
-     * Constructs a new exception with the specified detail message and cause.
-     *
-     * @param message The detail message
-     * @param cause   The cause
-     */
-    public TagServiceException(String message, Throwable cause) {
-
-        super(message, cause);
-        this.setErrorCode(getDefaultErrorCode());
-    }
-
-    /**
      * Constructs a new exception with an error code and a detail message.
      *
-     * @param errorCode The error code
-     * @param message   The detail message
+     * @param errorCode The error code.
+     * @param message   The detail message.
      */
     public TagServiceException(String errorCode, String message) {
 
@@ -67,9 +44,9 @@ public class TagServiceException extends IdentityException {
     /**
      * Constructs a new exception with an error code, detail message and throwable.
      *
-     * @param errorCode The error code
-     * @param message   The detail message
-     * @param throwable Throwable
+     * @param errorCode The error code.
+     * @param message   The detail message.
+     * @param throwable Throwable.
      */
     public TagServiceException(String errorCode, String message, Throwable throwable) {
 
@@ -80,7 +57,7 @@ public class TagServiceException extends IdentityException {
     /**
      * Get the default error code of the exception.
      *
-     * @return Error description
+     * @return Error description.
      */
     private String getDefaultErrorCode() {
 

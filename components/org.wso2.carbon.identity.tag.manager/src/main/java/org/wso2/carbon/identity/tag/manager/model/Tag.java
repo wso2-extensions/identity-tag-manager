@@ -93,5 +93,4 @@ public class Tag {
 
         this.tenantUuid = tenantUuid;
     }
-
 }

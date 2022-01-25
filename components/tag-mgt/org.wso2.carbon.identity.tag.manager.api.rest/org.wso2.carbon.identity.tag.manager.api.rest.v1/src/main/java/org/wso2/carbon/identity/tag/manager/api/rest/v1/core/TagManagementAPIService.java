@@ -33,7 +33,7 @@ import org.wso2.carbon.identity.core.model.FilterTreeBuilder;
 import org.wso2.carbon.identity.core.model.Node;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
-import org.wso2.carbon.identity.tag.manager.model.ErrorMessage;
+import org.wso2.carbon.identity.tag.manager.core.constant.TagMgtConstants.ErrorMessage;
 import org.wso2.carbon.identity.tag.manager.api.rest.v1.model.ApplicationAssociationRequest;
 import org.wso2.carbon.identity.tag.manager.api.rest.v1.model.PatchApplicationAssociation;
 import org.wso2.carbon.identity.tag.manager.api.rest.v1.model.TagCreateRequest;
@@ -483,7 +483,6 @@ public class TagManagementAPIService {
     private String buildErrorDescription(Constants.ErrorMessages errorEnum, String... data) {
 
         String description;
-
         if (ArrayUtils.isNotEmpty(data)) {
             description = String.format(errorEnum.getDescription(), data);
         } else {
@@ -535,7 +534,8 @@ public class TagManagementAPIService {
                 formattedFilter = "*" + searchValue + "*";
                 break;
             default:
-                throw new TagServiceException(Constants.ErrorMessages.INVALID_FILTER_OPERATION.toString());
+                throw new TagServiceException(Constants.ErrorMessages.INVALID_FILTER_OPERATION.getCode(),
+                        Constants.ErrorMessages.INVALID_FILTER_OPERATION.toString());
         }
         return formattedFilter;
     }

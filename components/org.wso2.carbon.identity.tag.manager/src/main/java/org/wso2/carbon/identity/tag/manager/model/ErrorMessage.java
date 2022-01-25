@@ -63,6 +63,8 @@ public enum ErrorMessage {
             "Attempted filtering operation '%s' is invalid. " +
                     "Please use one of the supported filtering operations such as 'eq', 'co', 'sw', 'ew', 'and' " +
                     "or 'or'."),
+    ERROR_CODE_EMPTY_FILTER_VALUE("60016", "Filter value cannot be empty",
+            "Filter value cannot be empty"),
 
     // Server Errors.
     ERROR_CODE_SORT_BY_NOT_IMPLEMENTED("65002", "Sort-By not implemented",
@@ -96,7 +98,9 @@ public enum ErrorMessage {
     ERROR_CODE_NO_UNIQUE_ID_FOR_TENANT("65016", "No uniqueId found for the tenant: %s",
             "Error occurred while getting Tenant UUID."),
     ERROR_CODE_ERROR_GETTING_TENANT_UUID("65017", "Error while getting the tenant UUID",
-            "Error occurred while getting the tenant UUID for tenant: %s");
+            "Error occurred while getting the tenant UUID for tenant: %s"),
+    ERROR_CODE_ERROR_EMPTY_TAG_TYPES_LIST("65018", "Empty tag types list.",
+            "Tags have not been defined yet.");
 
     private final String code;
     private final String message;

@@ -20,9 +20,9 @@ package org.wso2.carbon.identity.tag.manager.core.dao;
 
 import org.apache.commons.lang.StringUtils;
 import org.wso2.carbon.identity.core.util.IdentityDatabaseUtil;
-import org.wso2.carbon.identity.tag.manager.core.constant.Constants;
+import org.wso2.carbon.identity.tag.manager.core.constant.TagMgtConstants;
 import org.wso2.carbon.identity.tag.manager.exception.TagServiceException;
-import org.wso2.carbon.identity.tag.manager.model.ErrorMessage;
+import org.wso2.carbon.identity.tag.manager.core.constant.TagMgtConstants.ErrorMessage;
 import org.wso2.carbon.identity.tag.manager.model.Tag;
 import org.wso2.carbon.identity.tag.manager.model.TagAssociationsResult;
 import org.wso2.carbon.identity.tag.manager.model.TagListResult;
@@ -43,11 +43,11 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     @Override
     public Tag loadTag(String tagUuid, String tenantUuid) throws TagServiceException {
 
-        PreparedStatement prepStmt;
         ResultSet resultSet;
         Tag tag = null;
-        try (Connection connection = IdentityDatabaseUtil.getDBConnection(false)) {
-            prepStmt = connection.prepareStatement(Constants.SQLConstants.GET_IDN_TAG_BY_TAG_UUID_SQL);
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection(false);
+             PreparedStatement prepStmt =
+                     connection.prepareStatement(TagMgtConstants.SQLConstants.GET_IDN_TAG_BY_TAG_UUID_SQL)) {
             prepStmt.setString(1, tagUuid);
             resultSet = prepStmt.executeQuery();
             if (resultSet.next()) {
@@ -59,31 +59,7 @@ public class TagManagementDAOImpl implements TagManagementDAO {
                 tag.setAssociationType(resultSet.getString(5));
             }
         } catch (SQLException e) {
-            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_LOADING_TAG.getCode(), e);
-        }
-        return tag;
-    }
-
-    @Override
-    public Tag loadTag(String name, String type, String tenantUuid) throws TagServiceException {
-
-        PreparedStatement prepStmt;
-        ResultSet resultSet;
-        Tag tag = null;
-        try (Connection connection = IdentityDatabaseUtil.getDBConnection(false)) {
-            prepStmt = connection.prepareStatement(Constants.SQLConstants.GET_IDN_TAG_BY_NAME_TYPE_TENANT_UUID_SQL);
-            prepStmt.setString(1, name);
-            prepStmt.setString(2, type);
-            prepStmt.setString(3, tenantUuid);
-            resultSet = prepStmt.executeQuery();
-            if (resultSet.next()) {
-                tag = new Tag();
-                tag.setTagUuid(resultSet.getString(1));
-                tag.setDescription(resultSet.getString(2));
-                tag.setPubliclyVisible(isPublic(resultSet.getString(3)));
-            }
-        } catch (SQLException e) {
-            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_LOADING_TAG.getCode(), e);
+            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_LOADING_TAG.getCode(), e.getMessage());
         }
         return tag;
     }
@@ -92,18 +68,16 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     public TagListResult filterTags(int limit, int offset, String sortBy, String sortOrder, String filter,
                                     String tenantUuid) throws TagServiceException {
 
-        if (limit == 0) {
-            return null;
-        }
-        PreparedStatement prepStmt;
-        ResultSet resultSet;
         TagListResult tagListResult = new TagListResult();
-        List<Tag> tagList = new ArrayList<>();
-        try (Connection connection = IdentityDatabaseUtil.getDBConnection(false)) {
-
+        if (limit == 0) {
+            return tagListResult;
+        }
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection(false);
+             PreparedStatement prepStmt = connection.prepareStatement(
+                     TagMgtConstants.SQLConstants.LOAD_IDN_TAGS_BY_TYPE_NAME_TENANT_UUID)) {
+            ResultSet resultSet;
+            List<Tag> tagList = new ArrayList<>();
             String filterResolvedForSQL = resolveSQLFilter(filter);
-
-            prepStmt = connection.prepareStatement(Constants.SQLConstants.LOAD_IDN_TAGS_BY_TYPE_NAME_TENANT_UUID);
             prepStmt.setString(1, tenantUuid);
             prepStmt.setString(2, filterResolvedForSQL);
             prepStmt.setInt(3, limit);
@@ -121,7 +95,7 @@ public class TagManagementDAOImpl implements TagManagementDAO {
             tagListResult.settotalAvailableResultss(tagList.size());
         } catch (SQLException e) {
             throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_GETTING_TAGS_FROM_TYPE_TENANT_UUID.getCode(),
-                    e);
+                    e.getMessage());
         }
         return tagListResult;
     }
@@ -130,19 +104,22 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     public List<String> loadTagTypes(int limit, int offset, String sortBy, String sortOrder)
             throws TagServiceException {
 
-        PreparedStatement prepStmt;
         ResultSet resultSet;
-        List<String> tagTypesList=null;
-        try (Connection connection = IdentityDatabaseUtil.getDBConnection(false)) {
-            prepStmt = connection.prepareStatement(Constants.SQLConstants.LOAD_IDN_TAG_TYPES);
+        List<String> tagTypesList=new ArrayList<>();
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection(false);
+             PreparedStatement prepStmt =
+                     connection.prepareStatement(TagMgtConstants.SQLConstants.LOAD_IDN_TAG_TYPES)) {
             prepStmt.setInt(1, limit);
             prepStmt.setInt(2, offset);
             resultSet = prepStmt.executeQuery();
-            if (resultSet.next()) {
-                tagTypesList.add(resultSet.getString(1));
+            while (resultSet.next()) {
+                String type = resultSet.getString(1);
+                if (StringUtils.isNotBlank(type)) {
+                    tagTypesList.add(type);
+                }
             }
-        } catch (SQLException | NullPointerException e) {
-            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_LOADING_TAG_TYPES.getCode(), e);
+        } catch (SQLException e) {
+            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_LOADING_TAG_TYPES.getCode(), e.getMessage());
         }
         return tagTypesList;
     }
@@ -151,13 +128,12 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     public String storeTag(Tag tag, String tenantUuid) throws TagServiceException {
 
         String tagUuid = UUIDGenerator.generateUUID();
-        PreparedStatement prepStmt;
-        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true)) {
-            prepStmt = connection.prepareStatement(Constants.SQLConstants.ADD_IDN_TAG_SQL);
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true);
+             PreparedStatement prepStmt = connection.prepareStatement(TagMgtConstants.SQLConstants.ADD_IDN_TAG_SQL)) {
             prepStmt.setString(1, tagUuid);
             prepStmt.setString(2, tag.getName());
             prepStmt.setString(3, tag.getDescription());
-            prepStmt.setString(4, isPublicToString(tag.isPubliclyVisible()));
+            prepStmt.setString(4, String.valueOf(tag.isPubliclyVisible()));
             prepStmt.setString(5, tag.getType());
             prepStmt.setString(6, tenantUuid);
             prepStmt.execute();
@@ -172,9 +148,9 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     @Override
     public void deleteTag(String tagUuid, String tenantUuid) throws TagServiceException {
 
-        PreparedStatement prepStmt;
-        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true)) {
-            prepStmt = connection.prepareStatement(Constants.SQLConstants.DELETE_IDN_TAG_SQL);
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true);
+             PreparedStatement prepStmt = connection.prepareStatement(
+                     TagMgtConstants.SQLConstants.DELETE_IDN_TAG_SQL)) {
             prepStmt.setString(1, tagUuid);
             prepStmt.setString(2, tenantUuid);
             prepStmt.execute();
@@ -189,9 +165,9 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     public void updateTag(String tagUuid, String name, String description, boolean isPubliclyVisible, String tenantUuid)
             throws TagServiceException {
 
-        PreparedStatement prepStmt;
-        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true)) {
-            prepStmt = connection.prepareStatement(Constants.SQLConstants.UPDATE_IDN_TAG_SQL);
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true);
+             PreparedStatement prepStmt = connection.prepareStatement(
+                     TagMgtConstants.SQLConstants.UPDATE_IDN_TAG_SQL)) {
             prepStmt.setString(1, name);
             prepStmt.setString(2, description);
             prepStmt.setBoolean(3, isPubliclyVisible);
@@ -208,9 +184,9 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     @Override
     public void storeAssociation(String tagUuid, String resourceUuid, String tenantUuid) throws TagServiceException {
 
-        PreparedStatement prepStmt;
-        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true)) {
-            prepStmt = connection.prepareStatement(Constants.SQLConstants.ADD_TAG_RESOURCE_ASC_SQL);
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true);
+             PreparedStatement prepStmt = connection.prepareStatement(
+                     TagMgtConstants.SQLConstants.ADD_TAG_RESOURCE_ASC_SQL)) {
             prepStmt.setString(1, tagUuid);
             prepStmt.setString(2, resourceUuid);
             prepStmt.setString(3, tenantUuid);
@@ -225,9 +201,9 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     @Override
     public void deleteAssociation(String tagUuid, String resourceUuid) throws TagServiceException {
 
-        PreparedStatement prepStmt;
-        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true)) {
-            prepStmt = connection.prepareStatement(Constants.SQLConstants.DELETE_TAG_RESOURCE_ASC_SQL);
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true);
+             PreparedStatement prepStmt = connection.prepareStatement(
+                     TagMgtConstants.SQLConstants.DELETE_TAG_RESOURCE_ASC_SQL)) {
             prepStmt.setString(1, tagUuid);
             prepStmt.setString(2, resourceUuid);
             prepStmt.execute();
@@ -243,21 +219,21 @@ public class TagManagementDAOImpl implements TagManagementDAO {
             throws TagServiceException {
 
         List<Tag> tagList = new ArrayList<>();
-        PreparedStatement prepStmt;
-        ResultSet rs;
-        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true)) {
-            prepStmt = connection.prepareStatement(Constants.SQLConstants.GET_TAG_RESOURCE_ASC_BY_RESOURCE_UUID_SQL);
+        ResultSet resultSet;
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true);
+             PreparedStatement prepStmt = connection.prepareStatement(
+                     TagMgtConstants.SQLConstants.GET_TAG_RESOURCE_ASC_BY_RESOURCE_UUID_SQL)) {
             prepStmt.setString(1, resourceUuid);
-            rs = prepStmt.executeQuery();
-            while (rs.next()) {
+            resultSet = prepStmt.executeQuery();
+            while (resultSet.next()) {
                 Tag tag = new Tag();
-                tag.setTagUuid(rs.getString(1));
-                tag.setName(rs.getString(2));
-                tag.setPubliclyVisible(isPublic(rs.getString(3)));
+                tag.setTagUuid(resultSet.getString(1));
+                tag.setName(resultSet.getString(2));
+                tag.setPubliclyVisible(isPublic(resultSet.getString(3)));
                 tagList.add(tag);
             }
         } catch (SQLException e) {
-            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_GETTING_ASSOCIATIONS.getCode(), e);
+            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_GETTING_ASSOCIATIONS.getCode(), e.getMessage());
         }
         return new TagAssociationsResult(tagList.size(), tagList);
     }
@@ -265,9 +241,9 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     @Override
     public void deleteAssociationByResource(String resourceUuid) throws TagServiceException {
 
-        PreparedStatement prepStmt;
-        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true)) {
-            prepStmt = connection.prepareStatement(Constants.SQLConstants.DELETE_TAG_RESOURCE_ASC_BY_RESOURCE_SQL);
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true);
+             PreparedStatement prepStmt = connection.prepareStatement(
+                     TagMgtConstants.SQLConstants.DELETE_TAG_RESOURCE_ASC_BY_RESOURCE_SQL)) {
             prepStmt.setString(1, resourceUuid);
             prepStmt.execute();
             IdentityDatabaseUtil.commitTransaction(connection);
@@ -280,15 +256,15 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     @Override
     public boolean isExistingAssociation(String tagUuid, String resourceId) throws TagServiceException {
 
-        PreparedStatement prepStmt;
         boolean status;
-        try (Connection connection = IdentityDatabaseUtil.getDBConnection(false)) {
-            prepStmt = connection.prepareStatement(Constants.SQLConstants.GET_TAG_RESOURCE_ASC_BY_RESOURCE_TAG_UUID_SQL);
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection(false);
+             PreparedStatement prepStmt = connection.prepareStatement(
+                     TagMgtConstants.SQLConstants.IS_TAG_ASC_EXISTING_SQL)) {
             prepStmt.setString(1, tagUuid);
             prepStmt.setString(1, resourceId);
             status = prepStmt.execute();
         } catch (SQLException e) {
-            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_GETTING_ASSOCIATION.getCode(), e);
+            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_GETTING_ASSOCIATION.getCode(), e.getMessage());
         }
         return status;
     }
@@ -296,14 +272,32 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     @Override
     public boolean isExistingTagId(String tagUuid) throws TagServiceException {
 
-        PreparedStatement prepStmt;
         boolean status;
-        try (Connection connection = IdentityDatabaseUtil.getDBConnection(false)) {
-            prepStmt = connection.prepareStatement(Constants.SQLConstants.GET_IDN_TAG_BY_TAG_UUID_SQL);
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection(false);
+             PreparedStatement prepStmt = connection.prepareStatement(
+                     TagMgtConstants.SQLConstants.IS_IDN_TAG_ID_VALID_SQL)) {
             prepStmt.setString(1, tagUuid);
             status = prepStmt.execute();
         } catch (SQLException e) {
-            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_LOADING_TAG.getCode(), e);
+            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_LOADING_TAG.getCode(), e.getMessage());
+        }
+        return status;
+    }
+
+    @Override
+    public boolean isExistingTag(String name, String type, String tenantUuid) throws TagServiceException {
+
+        PreparedStatement prepStmt;
+        boolean status;
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection(false)) {
+            prepStmt =
+                    connection.prepareStatement(TagMgtConstants.SQLConstants.IS_IDN_TAG_EXISTING_SQL);
+            prepStmt.setString(1, name);
+            prepStmt.setString(2, type);
+            prepStmt.setString(3, tenantUuid);
+            status = prepStmt.execute();
+        } catch (SQLException e) {
+            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_LOADING_TAG.getCode(), e.getMessage());
         }
         return status;
     }
@@ -313,7 +307,7 @@ public class TagManagementDAOImpl implements TagManagementDAO {
 
         PreparedStatement prepStmt;
         try (Connection connection = IdentityDatabaseUtil.getDBConnection(true)) {
-            prepStmt = connection.prepareStatement(Constants.SQLConstants.DELETE_IDN_TAGS_BY_TENANT_SQL);
+            prepStmt = connection.prepareStatement(TagMgtConstants.SQLConstants.DELETE_IDN_TAGS_BY_TENANT_SQL);
             prepStmt.setString(1, tenantUuid);
             prepStmt.execute();
             IdentityDatabaseUtil.commitTransaction(connection);
@@ -343,19 +337,5 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     private boolean isPublic(String isPublic) {
 
         return isPublic.equals("1");
-    }
-
-    /**
-     * Convert boolean value of is_publicly_visible into String when storing in the database.
-     *
-     * @param isPublic Public visibility of the tag.
-     * @return The String value of the boolean value.
-     */
-    private String isPublicToString(boolean isPublic) {
-
-        if (isPublic) {
-            return "1";
-        }
-        return "0";
     }
 }

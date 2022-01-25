@@ -27,32 +27,9 @@ import org.wso2.carbon.identity.tag.manager.model.ErrorMessage;
 public class TagServiceClientException extends TagServiceException {
 
     /**
-     * Constructs a new exception with the specified detail message.
-     *
-     * @param message The detail message
-     */
-    public TagServiceClientException(String message) {
-
-        super(message);
-        this.setErrorCode(getDefaultErrorCode());
-    }
-
-    /**
-     * Constructs a new exception with the specified detail message and cause.
-     *
-     * @param message The detail message
-     * @param cause   The cause
-     */
-    public TagServiceClientException(String message, Throwable cause) {
-
-        super(message, cause);
-        this.setErrorCode(getDefaultErrorCode());
-    }
-
-    /**
      * Constructs a new exception with an error code and a detail message.
      *
-     * @param errorCode The error code
+     * @param errorCode The error code.
      * @param message   The detail message.
      */
     public TagServiceClientException(String errorCode, String message) {
