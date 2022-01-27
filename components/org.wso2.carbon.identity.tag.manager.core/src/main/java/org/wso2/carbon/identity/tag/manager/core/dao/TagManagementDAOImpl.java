@@ -322,8 +322,7 @@ public class TagManagementDAOImpl implements TagManagementDAO {
         // To avoid any issues when the filter string is blank or null, assigning "%" to SQLFilter.
         String sqlFilter = "%";
         if (StringUtils.isNotBlank(filter)) {
-            sqlFilter = filter.trim()
-                    .replace("*", "%");
+            sqlFilter = filter.trim().replace("*", "%");
         }
         return sqlFilter;
     }

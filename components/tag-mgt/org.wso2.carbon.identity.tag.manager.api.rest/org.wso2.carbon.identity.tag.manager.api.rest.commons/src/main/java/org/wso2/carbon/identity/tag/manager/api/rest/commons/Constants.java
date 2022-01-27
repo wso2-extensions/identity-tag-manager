@@ -28,7 +28,7 @@ public class Constants {
     public static final String V1_API_PATH_COMPONENT = "/v1";
     public static final String TENANT_CONTEXT_PATH_COMPONENT = "/t/%s";
     public static final String TAG_MANAGEMENT_PATH_COMPONENT = "/tags";
-    public static final String ERROR_PREFIX = "TM-";
+    public static final String ERROR_PREFIX = "TMS-";
 
     /**
      * Enum for common server error messages.

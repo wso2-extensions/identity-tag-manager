@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.tag.manager.core.internal.impl;
+package org.wso2.carbon.identity.tag.manager.core.internal.service.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;

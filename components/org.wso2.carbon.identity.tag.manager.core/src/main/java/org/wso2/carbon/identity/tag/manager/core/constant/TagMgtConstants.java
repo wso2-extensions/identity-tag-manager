@@ -107,7 +107,7 @@ public class TagMgtConstants {
         private final String code;
         private final String message;
         private final String description;
-        public static final String ERROR_PREFIX = "TM-";
+        public static final String ERROR_PREFIX = "TMS-";
 
         ErrorMessage(String code, String message, String description) {
 

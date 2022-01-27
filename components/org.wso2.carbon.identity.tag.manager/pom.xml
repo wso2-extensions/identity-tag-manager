@@ -33,26 +33,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.user.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.user.api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.wso2.config.mapper</groupId>
             <artifactId>config-mapper</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.identity.core</artifactId>
-            <version>${carbon.identity.framework.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.base</artifactId>
-            <version>${carbon.identity.framework.version}</version>
         </dependency>
     </dependencies>
     <build>
@@ -68,12 +54,14 @@
                         </Bundle-SymbolicName>
                         <Export-Package>
                             org.wso2.carbon.identity.tag.manager.*; version = "${project.version}"
+                            org.wso2.carbon.identity.tag.manager; version = "${project.version}"
                         </Export-Package>
                         <Import-Package>
                             org.osgi.framework; version="${osgi.framework.imp.pkg.version.range}",
                             org.osgi.service.component; version="${osgi.service.component.imp.pkg.version.range}",
                             org.apache.commons.lang.*; version="${commons-lang.osgi.version.range}",
                             org.apache.commons.logging.*; version="${commons-logging.osgi.version.range}",
+                            org.wso2.carbon.identity.base.*; version="${carbon.identity.framework.imp.pkg.version.range}",
                         </Import-Package>
                     </instructions>
                 </configuration>

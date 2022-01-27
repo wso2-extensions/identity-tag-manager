@@ -29,27 +29,27 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.wso2.carbon.identity.tag.manager.TagManagementService;
-import org.wso2.carbon.identity.tag.manager.core.internal.impl.TagManagementServiceImpl;
+import org.wso2.carbon.identity.tag.manager.core.internal.service.impl.TagManagementServiceImpl;
 import org.wso2.carbon.user.core.service.RealmService;
 
 /**
  * Service component class of the tag service manager.
  */
 @Component(
-        name = "org.wso2.identity.tag.manager.service.component",
+        name = "org.wso2.identity.tag.manager.core.service.component",
         immediate = true
 )
 public class TagManagementServiceComponent {
 
-    private static final Log
-            LOG = LogFactory.getLog(TagManagementServiceComponent.class);
+    private static final Log LOG = LogFactory.getLog(TagManagementServiceComponent.class);
 
     @Activate
     protected void activate(ComponentContext ctxt) {
 
         try {
+            TagManagementServiceImpl tagManagementService = new TagManagementServiceImpl();
             BundleContext bundleContext = ctxt.getBundleContext();
-            bundleContext.registerService(TagManagementService.class, new TagManagementServiceImpl(), null);
+            bundleContext.registerService(TagManagementService.class.getName(), tagManagementService, null);
             LOG.info("TagManagementService service component activated successfully.");
         } catch (Exception e) {
             LOG.error("Failed to activate TagManagementService service component.", e);

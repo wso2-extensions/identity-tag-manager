@@ -43,16 +43,6 @@
             <groupId>org.wso2.config.mapper</groupId>
             <artifactId>config-mapper</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.core</artifactId>
-            <version>${carbon.identity.framework.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.base</artifactId>
-            <version>${carbon.identity.framework.version}</version>
-        </dependency>
         <!-- Testing related dependencies -->
         <dependency>
             <groupId>org.testng</groupId>
@@ -118,6 +108,7 @@
                             org.wso2.carbon.registry.core.utils.*;version="${carbon.registry.imp.pkg.version.range}",
                             org.wso2.carbon.user.api.*; version="${carbon.user.api.imp.pkg.version.range}",
                             org.wso2.carbon.identity.tag.manager.*;
+                            org.wso2.carbon.identity.tag.manager;
                         </Import-Package>
                     </instructions>
                 </configuration>
