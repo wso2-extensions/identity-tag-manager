@@ -29,7 +29,7 @@
             <ResourceId>/permission/admin/manage/identity/tagmgt/create</ResourceId>
         </ManagementPermission>
         <ManagementPermission>
-            <DisplayName>List</DisplayName>
+            <DisplayName>View</DisplayName>
             <ResourceId>/permission/admin/manage/identity/tagmgt/view</ResourceId>
         </ManagementPermission>
         <ManagementPermission>

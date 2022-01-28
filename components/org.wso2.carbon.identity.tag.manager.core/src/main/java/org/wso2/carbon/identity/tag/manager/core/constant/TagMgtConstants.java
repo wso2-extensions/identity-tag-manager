@@ -50,23 +50,28 @@ public class TagMgtConstants {
                 "Tag UUID cannot be empty"),
         ERROR_CODE_EMPTY_NAME("60009", "Empty name",
                 "Tag name cannot be empty"),
-        ERROR_CODE_EMPTY_RESOURCE_UUID("60010", "Empty resource UUID",
+        ERROR_CODE_INVALID_TAG_NAME("60010", "Invalid tag name",
+                "Tag name is not in the expected format"),
+        ERROR_CODE_EMPTY_RESOURCE_UUID("60011", "Empty resource UUID",
                 "Resource UUID cannot be empty"),
-        ERROR_CODE_TAG_ALREADY_EXISTS("60011", "Tag named %s for tenant %s already exists.",
+        ERROR_CODE_TAG_ALREADY_EXISTS("60012", "Tag named %s for tenant %s already exists.",
                 "Tag name should be unique for a given type and tenant"),
-        ERROR_CODE_TAG_DATA_DOES_NOT_EXIST("60012", "Tag with UUID %s does not exist.",
+        ERROR_CODE_TAG_DATA_DOES_NOT_EXIST("60013", "Tag with UUID %s does not exist.",
                 "Tag UUID not found"),
-        UNSUPPORTED_FILTER_ATTRIBUTE("60013", "Filtering using the attempted attribute is not supported.",
+        UNSUPPORTED_FILTER_ATTRIBUTE("60014", "Filtering using the attempted attribute is not supported.",
                 "Filtering cannot be done with the '%s' attribute." +
                         "Filtering is only supported with the 'name' attribute."),
-        INVALID_FILTER_FORMAT("60014", "Invalid format tag for filtering.",
+        INVALID_FILTER_FORMAT("60015", "Invalid format tag for filtering.",
                 "Filter needs to be in the format <attribute>+<operation>+<value>. Eg: name+eq+test"),
-        INVALID_FILTER_OPERATION("60015", "Attempted filtering operation is invalid.",
+        INVALID_FILTER_OPERATION("60016", "Attempted filtering operation is invalid.",
                 "Attempted filtering operation '%s' is invalid. " +
                         "Please use one of the supported filtering operations such as 'eq', 'co', 'sw', 'ew', 'and' " +
                         "or 'or'."),
-        ERROR_CODE_EMPTY_FILTER_VALUE("60016", "Filter value cannot be empty",
+        ERROR_CODE_EMPTY_FILTER_VALUE("60017", "Filter value cannot be empty",
                 "Filter value cannot be empty"),
+        ERROR_CODE_TAG_ASC_ALREADY_EXISTS("60018",
+                "An association already exists between the given tag and resource.",
+                "An association is already exists."),
 
         // Server Errors.
         ERROR_CODE_SORT_BY_NOT_IMPLEMENTED("65002", "Sort-By not implemented",
@@ -102,7 +107,9 @@ public class TagMgtConstants {
         ERROR_CODE_ERROR_GETTING_TENANT_UUID("65017", "Error while getting the tenant UUID",
                 "Error occurred while getting the tenant UUID for tenant: %s"),
         ERROR_CODE_ERROR_EMPTY_TAG_TYPES_LIST("65018", "Empty tag types list.",
-                "Tags have not been defined yet.");
+                "Tags have not been defined yet."),
+        ERROR_CODE_ERROR_GETTING_TAG_EXISTENCE("65019", "Error checking the tag's existence",
+                "Error occurred while checking the existence of the tag");
 
         private final String code;
         private final String message;
@@ -160,8 +167,8 @@ public class TagMgtConstants {
 
         public static final String IS_IDN_TAG_ID_VALID_SQL = "SELECT EXISTS (SELECT UUID FROM IDN_TAG WHERE UUID=?)";
 
-        public static final String IS_IDN_TAG_EXISTING_SQL = "SELECT UUID FROM IDN_TAG WHERE NAME=? AND TYPE=? "
-                + "AND TENANT_UUID=?";
+        public static final String IS_IDN_TAG_EXISTING_SQL = "SELECT EXISTS (SELECT UUID FROM IDN_TAG WHERE NAME=? AND "
+                + "TYPE=? AND TENANT_UUID=?)";
 
         public static final String ADD_IDN_TAG_SQL = "INSERT INTO IDN_TAG "
                 + "(UUID, NAME, DESCRIPTION, IS_PUBLICLY_VISIBLE, TYPE, TENANT_UUID) VALUES (?,?,?,?,?,?)";
@@ -187,7 +194,7 @@ public class TagMgtConstants {
 
         public static final String DELETE_IDN_TAGS_BY_TENANT_SQL = "DELETE FROM IDN_TAG WHERE TENANT_UUID=?";
 
-        public static final String IS_TAG_ASC_EXISTING_SQL = "SELECT EXISTS (SELECT ID FROM IDN_TAGS_ASC WHERE "
+        public static final String IS_TAG_ASC_EXISTING_SQL = "SELECT EXISTS (SELECT ID FROM IDN_TAG_ASCS WHERE "
                 + "TAG_UUID=? AND RESOURCE_UUID=?)";
 
         public static final String ADD_TAG_RESOURCE_ASC_SQL = "INSERT INTO IDN_TAG_ASCS(TAG_UUID, RESOURCE_UUID, "

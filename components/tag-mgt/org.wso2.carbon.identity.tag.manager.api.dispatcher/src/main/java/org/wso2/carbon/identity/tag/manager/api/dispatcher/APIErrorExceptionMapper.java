@@ -28,7 +28,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.WebApplicationException;
 
-
 /**
  * Map API Error status codes.
  */
@@ -54,9 +53,7 @@ public class APIErrorExceptionMapper implements ExceptionMapper<WebApplicationEx
         if (e instanceof APIError) {
             Object response = ((APIError) e).getResponseEntity();
             Response.Status status = getHttpsStatusCode(((APIError) e).getCode(), ((APIError) e).getStatus());
-
             return buildResponse(response, status);
-
         }
         return e.getResponse();
     }
@@ -64,8 +61,7 @@ public class APIErrorExceptionMapper implements ExceptionMapper<WebApplicationEx
     private Response buildResponse(Object response, Response.Status status) {
 
         if (response != null) {
-            return Response.status(status)
-                    .entity(response)
+            return Response.status(status).entity(response)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).build();
         } else {
             return Response.status(status)
@@ -73,4 +69,3 @@ public class APIErrorExceptionMapper implements ExceptionMapper<WebApplicationEx
         }
     }
 }
-

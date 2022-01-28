@@ -108,7 +108,6 @@
                             org.wso2.carbon.registry.core.utils.*;version="${carbon.registry.imp.pkg.version.range}",
                             org.wso2.carbon.user.api.*; version="${carbon.user.api.imp.pkg.version.range}",
                             org.wso2.carbon.identity.tag.manager.*;
-                            org.wso2.carbon.identity.tag.manager;
                         </Import-Package>
                     </instructions>
                 </configuration>

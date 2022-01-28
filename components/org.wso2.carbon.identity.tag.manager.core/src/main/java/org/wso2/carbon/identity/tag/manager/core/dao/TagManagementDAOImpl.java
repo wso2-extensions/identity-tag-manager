@@ -105,7 +105,7 @@ public class TagManagementDAOImpl implements TagManagementDAO {
             throws TagServiceException {
 
         ResultSet resultSet;
-        List<String> tagTypesList=new ArrayList<>();
+        List<String> tagTypesList = new ArrayList<>();
         try (Connection connection = IdentityDatabaseUtil.getDBConnection(false);
              PreparedStatement prepStmt =
                      connection.prepareStatement(TagMgtConstants.SQLConstants.LOAD_IDN_TAG_TYPES)) {
@@ -220,7 +220,7 @@ public class TagManagementDAOImpl implements TagManagementDAO {
 
         List<Tag> tagList = new ArrayList<>();
         ResultSet resultSet;
-        try (Connection connection = IdentityDatabaseUtil.getDBConnection(true);
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection(false);
              PreparedStatement prepStmt = connection.prepareStatement(
                      TagMgtConstants.SQLConstants.GET_TAG_RESOURCE_ASC_BY_RESOURCE_UUID_SQL)) {
             prepStmt.setString(1, resourceUuid);
@@ -256,13 +256,19 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     @Override
     public boolean isExistingAssociation(String tagUuid, String resourceId) throws TagServiceException {
 
-        boolean status;
+        ResultSet resultSet;
+        boolean status = false;
         try (Connection connection = IdentityDatabaseUtil.getDBConnection(false);
              PreparedStatement prepStmt = connection.prepareStatement(
                      TagMgtConstants.SQLConstants.IS_TAG_ASC_EXISTING_SQL)) {
             prepStmt.setString(1, tagUuid);
-            prepStmt.setString(1, resourceId);
-            status = prepStmt.execute();
+            prepStmt.setString(2, resourceId);
+            resultSet = prepStmt.executeQuery();
+            if (resultSet.next()) {
+                if (resultSet.getBoolean(1)) {
+                    status = true;
+                }
+            }
         } catch (SQLException e) {
             throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_GETTING_ASSOCIATION.getCode(), e.getMessage());
         }
@@ -272,14 +278,21 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     @Override
     public boolean isExistingTagId(String tagUuid) throws TagServiceException {
 
-        boolean status;
+        ResultSet resultSet;
+        boolean status = false;
         try (Connection connection = IdentityDatabaseUtil.getDBConnection(false);
              PreparedStatement prepStmt = connection.prepareStatement(
                      TagMgtConstants.SQLConstants.IS_IDN_TAG_ID_VALID_SQL)) {
             prepStmt.setString(1, tagUuid);
-            status = prepStmt.execute();
+            resultSet = prepStmt.executeQuery();
+            if (resultSet.next()) {
+                if (resultSet.getBoolean(1)) {
+                    status = true;
+                }
+            }
         } catch (SQLException e) {
-            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_LOADING_TAG.getCode(), e.getMessage());
+            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_GETTING_TAG_EXISTENCE.getCode(),
+                    e.getMessage());
         }
         return status;
     }
@@ -287,17 +300,23 @@ public class TagManagementDAOImpl implements TagManagementDAO {
     @Override
     public boolean isExistingTag(String name, String type, String tenantUuid) throws TagServiceException {
 
-        PreparedStatement prepStmt;
-        boolean status;
+        ResultSet resultSet;
+        boolean status = false;
         try (Connection connection = IdentityDatabaseUtil.getDBConnection(false)) {
-            prepStmt =
+            PreparedStatement prepStmt =
                     connection.prepareStatement(TagMgtConstants.SQLConstants.IS_IDN_TAG_EXISTING_SQL);
             prepStmt.setString(1, name);
             prepStmt.setString(2, type);
             prepStmt.setString(3, tenantUuid);
-            status = prepStmt.execute();
+            resultSet = prepStmt.executeQuery();
+            if (resultSet.next()) {
+                if (resultSet.getBoolean(1)) {
+                    status = true;
+                }
+            }
         } catch (SQLException e) {
-            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_LOADING_TAG.getCode(), e.getMessage());
+            throw new TagServiceException(ErrorMessage.ERROR_CODE_ERROR_GETTING_TAG_EXISTENCE.getCode(),
+                    e.getMessage());
         }
         return status;
     }

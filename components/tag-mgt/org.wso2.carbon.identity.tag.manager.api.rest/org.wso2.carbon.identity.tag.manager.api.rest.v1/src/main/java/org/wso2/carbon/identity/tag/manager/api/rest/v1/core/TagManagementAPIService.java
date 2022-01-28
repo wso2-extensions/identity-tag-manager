@@ -139,9 +139,8 @@ public class TagManagementAPIService {
         offset = validateAndGetOffset(offset);
         TagListResult tagListResult;
         try {
-            tagListResult =
-                    TagManagementDataHolder.getTagManagementService()
-                            .filterTags(limit, offset, createFormattedFilter(filter), sortBy, sortOrder);
+            tagListResult = TagManagementDataHolder.getTagManagementService()
+                    .filterTags(limit, offset, createFormattedFilter(filter), sortBy, sortOrder);
         } catch (TagServiceException e) {
             throw handleException(e, Constants.ErrorMessages.ERROR_UNABLE_TO_RETRIEVE_ALL_TAGS);
         }
@@ -192,7 +191,7 @@ public class TagManagementAPIService {
 
         try {
             for (String tagUuid : applicationAssociationRequest.getTagIds()) {
-                TagManagementDataHolder.getTagManagementService().addAssociation(applicationId, tagUuid);
+                TagManagementDataHolder.getTagManagementService().addAssociation(tagUuid, applicationId);
             }
         } catch (TagServiceException e) {
             throw handleException(e, Constants.ErrorMessages.ERROR_UNABLE_TO_STORE_ASSOCIATION);
@@ -235,8 +234,7 @@ public class TagManagementAPIService {
             for (String tagUuid : patchApplicationAssociation.getTagIds()) {
                 if (patchApplicationAssociation.getOp().value().equals("add")) {
                     try {
-                        TagManagementDataHolder.getTagManagementService()
-                                .addAssociation(tagUuid, applicationId);
+                        TagManagementDataHolder.getTagManagementService().addAssociation(tagUuid, applicationId);
                     } catch (TagServiceException e) {
                         throw handleException(e, Constants.ErrorMessages.ERROR_UNABLE_TO_STORE_ASSOCIATION);
                     }
@@ -362,13 +360,13 @@ public class TagManagementAPIService {
 
     private void validateTagCreateRequest(TagCreateRequest tagCreateRequest) {
 
-        if (org.apache.commons.lang3.StringUtils.isBlank(tagCreateRequest.getName())) {
+        if (StringUtils.isBlank(tagCreateRequest.getName())) {
             throw handleError(Response.Status.BAD_REQUEST, Constants.ErrorMessages.ERROR_CODE_EMPTY_TAG_NAME);
         }
-        if (org.apache.commons.lang3.StringUtils.isBlank(tagCreateRequest.getType().value())) {
+        if (StringUtils.isBlank(tagCreateRequest.getType().value())) {
             throw handleError(Response.Status.BAD_REQUEST, Constants.ErrorMessages.ERROR_CODE_EMPTY_TAG_TYPE);
         }
-        if (validateName(tagCreateRequest.getName())) {
+        if (!validateName(tagCreateRequest.getName())) {
             throw handleError(Response.Status.BAD_REQUEST, Constants.ErrorMessages.ERROR_CODE_INVALID_TAG_NAME);
         }
     }
@@ -466,17 +464,13 @@ public class TagManagementAPIService {
 
     private ErrorResponse.Builder getErrorBuilder(Constants.ErrorMessages errorEnum, String... data) {
 
-        return new ErrorResponse.Builder()
-                .withCode(errorEnum.getCode())
-                .withMessage(errorEnum.getMessage())
+        return new ErrorResponse.Builder().withCode(errorEnum.getCode()).withMessage(errorEnum.getMessage())
                 .withDescription(buildErrorDescription(errorEnum, data));
     }
 
     private ErrorResponse.Builder getErrorBuilder(String errorCode, String errorMessage, String errorDescription) {
 
-        return new ErrorResponse.Builder()
-                .withCode(errorCode)
-                .withMessage(errorMessage)
+        return new ErrorResponse.Builder().withCode(errorCode).withMessage(errorMessage)
                 .withDescription(errorDescription);
     }
 
@@ -493,27 +487,27 @@ public class TagManagementAPIService {
 
     private Node buildFilterNode(String filter) {
 
-        if (StringUtils.isNotBlank(filter)) {
-            try {
-                FilterTreeBuilder filterTreeBuilder = new FilterTreeBuilder(filter);
-                Node rootNode = filterTreeBuilder.buildTree();
-                if (rootNode instanceof ExpressionNode) {
-                    ExpressionNode leftNode = (ExpressionNode) rootNode.getLeftNode();
-                    ExpressionNode rightNode = (ExpressionNode) rootNode.getRightNode();
-                    if (SEARCH_SUPPORTED_FIELDS.contains(leftNode.getAttributeValue()) ||
-                            SEARCH_SUPPORTED_FIELDS.contains(rightNode.getAttributeValue())) {
-                        return rootNode;
-                    }
-                } else {
-                    return null;
-                }
-            } catch (IdentityException | IOException e) {
-                return null;
-            }
-        } else {
-            return null;
+        if (StringUtils.isBlank(filter)) {
+            throw handleError(Response.Status.BAD_REQUEST, Constants.ErrorMessages.ERROR_CODE_EMPTY_TAG_UUID);
         }
-        return null;
+        try {
+            FilterTreeBuilder filterTreeBuilder = new FilterTreeBuilder(filter);
+            Node rootNode = filterTreeBuilder.buildTree();
+            if (rootNode instanceof ExpressionNode) {
+                ExpressionNode leftNode = (ExpressionNode) rootNode.getLeftNode();
+                ExpressionNode rightNode = (ExpressionNode) rootNode.getRightNode();
+                if (SEARCH_SUPPORTED_FIELDS.contains(leftNode.getAttributeValue()) ||
+                        SEARCH_SUPPORTED_FIELDS.contains(rightNode.getAttributeValue())) {
+                    return rootNode;
+                } else {
+                    throw handleError(Response.Status.BAD_REQUEST, Constants.ErrorMessages.INVALID_FILTER_ATTRIBUTE);
+                }
+            } else {
+                throw handleError(Response.Status.BAD_REQUEST, Constants.ErrorMessages.INVALID_FILTER_FORMAT);
+            }
+        } catch (IOException | IdentityException e) {
+            throw handleError(Response.Status.BAD_REQUEST, Constants.ErrorMessages.INVALID_FILTER_FORMAT);
+        }
     }
 
     private String generateFilterString(String searchOperation, String searchValue)

@@ -136,7 +136,7 @@ public class TagsApi  {
         @ApiResponse(code = 404, message = "Not Found", response = Error.class),
         @ApiResponse(code = 500, message = "Server Error", response = Error.class)
     })
-    public Response filterTags(    @Valid @Min(1)@ApiParam(value = "Maximum number of records to return. ", defaultValue="10") @DefaultValue("10")  @QueryParam("limit") Integer limit,     @Valid@ApiParam(value = "Number of records to skip for pagination. ", defaultValue="0") @DefaultValue("0")  @QueryParam("offset") Integer offset,     @Valid@ApiParam(value = "Condition to filter the retrieval of records. Supports 'sw', 'co', 'ew' and 'eq' operations. Currently supports filtering based on the 'name' and 'type' attributes. /tags?filter=name+co+test&filter=type+eq+APPLICATION ")  @QueryParam("filter") String filter) {
+    public Response filterTags(    @Valid @Min(1)@ApiParam(value = "Maximum number of records to return. ", defaultValue="10") @DefaultValue("10")  @QueryParam("limit") Integer limit,     @Valid@ApiParam(value = "Number of records to skip for pagination. ", defaultValue="0") @DefaultValue("0")  @QueryParam("offset") Integer offset,     @Valid@ApiParam(value = "Condition to filter the retrieval of records. Supports 'sw', 'co', 'ew' and 'eq' operations. Currently supports filtering based on the 'name' attribute. /tags?filter=name+co+test&filter=type+eq+APPLICATION ")  @QueryParam("filter") String filter) {
 
         return delegate.filterTags(limit,  offset,  filter );
     }

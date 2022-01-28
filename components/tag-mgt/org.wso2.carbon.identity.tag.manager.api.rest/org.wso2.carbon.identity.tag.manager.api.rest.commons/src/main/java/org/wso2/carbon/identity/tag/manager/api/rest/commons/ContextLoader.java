@@ -96,11 +96,8 @@ public class ContextLoader {
 
         String errorCode = ERROR_CODE_DEFAULT_UNEXPECTED_ERROR.getCode();
         String errorMessage = "Error while building response.";
-        ErrorResponse errorResponse = new ErrorResponse.Builder().
-                withCode(errorCode)
-                .withMessage(errorMessage)
-                .withDescription(errorDescription)
-                .build(LOG, errorMessage, true);
+        ErrorResponse errorResponse = new ErrorResponse.Builder().withCode(errorCode).withMessage(errorMessage)
+                .withDescription(errorDescription).build(LOG, errorMessage, true);
         Response.Status status = Response.Status.INTERNAL_SERVER_ERROR;
         return new APIError(status, errorResponse);
     }

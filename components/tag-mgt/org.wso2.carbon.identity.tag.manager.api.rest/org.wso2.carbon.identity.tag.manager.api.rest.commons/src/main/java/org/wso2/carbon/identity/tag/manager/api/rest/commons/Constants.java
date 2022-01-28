@@ -49,6 +49,13 @@ public class Constants {
                         +
                         "Please use one of the supported filtering operations such as 'eq', 'co', 'sw', 'ew', 'and' " +
                         "or 'or'."),
+        INVALID_FILTER_ATTRIBUTE("60005",
+                "Attempted filtering attribute is invalid.",
+                "Attempted filtering attribute '%s' is invalid.Please use one of the supported filtering " +
+                        "such as 'name'"),
+        INVALID_FILTER_FORMAT("60006",
+                "Invalid format for filtering.",
+                "Filter needs to be in the format <attribute>+<operation>+<value>. Eg: name+eq+test"),
         ERROR_COMMON_SERVER_ERROR(
                 "65000",
                 "Unable to complete operation.",

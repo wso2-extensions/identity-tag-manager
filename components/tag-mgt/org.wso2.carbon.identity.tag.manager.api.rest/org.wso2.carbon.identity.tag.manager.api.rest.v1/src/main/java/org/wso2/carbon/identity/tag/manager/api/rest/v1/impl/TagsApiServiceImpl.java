@@ -39,13 +39,13 @@ public class TagsApiServiceImpl implements TagsApiService {
                                              ApplicationAssociationRequest applicationAssociationRequest) {
 
         tagManagementApiService.associateWithApplication(applicationId, applicationAssociationRequest);
-        return Response.accepted().build();
+        return Response.ok().build();
     }
 
     @Override
     public Response createTag(TagCreateRequest tagCreateRequest) {
 
-        String tagUuid = "";
+        String tagUuid;
         tagUuid = tagManagementApiService.createTag(tagCreateRequest);
         return Response.created(getResourceLocation(tagUuid)).build();
     }

@@ -43,26 +43,18 @@ import java.util.List;
 public class TagManagementServiceImpl implements TagManagementService {
 
     private static final Log LOG = LogFactory.getLog(TagManagementService.class);
-    private String tenantUuid = getTenantUuid();
-
-    public TagManagementServiceImpl() throws TagServiceException {
-
-    }
 
     @Override
     public String addTag(Tag tag) throws TagServiceException {
 
+        String tenantUuid = getTenantUuid();
         // Check if the tag name is valid.
-        if (!isTagNameValid(tag.getName())) {
-            throw new TagServiceClientException(ErrorMessage.ERROR_CODE_EMPTY_NAME.getCode(),
-                    ErrorMessage.ERROR_CODE_EMPTY_NAME.getMessage());
-        }
+        isTagNameValid(tag.getName());
         TagManagementDAO tagManagementDAO = DAOFactory.getInstance().getTagManagementDAO();
         // Check if tag already existing.
         if (tagManagementDAO.isExistingTag(tag.getName(), tag.getType(), tenantUuid)) {
             throw new TagServiceClientException(ErrorMessage.ERROR_CODE_TAG_ALREADY_EXISTS.getCode(),
-                    String.format(ErrorMessage.ERROR_CODE_TAG_ALREADY_EXISTS.getMessage(), tag.getName(),
-                            tenantUuid));
+                    String.format(ErrorMessage.ERROR_CODE_TAG_ALREADY_EXISTS.getMessage(), tag.getName(), tenantUuid));
         }
         String tagUuid = tagManagementDAO.storeTag(tag, tenantUuid);
         if (LOG.isDebugEnabled()) {
@@ -74,6 +66,7 @@ public class TagManagementServiceImpl implements TagManagementService {
     @Override
     public Tag getTagById(String tagUuid) throws TagServiceException {
 
+        String tenantUuid = getTenantUuid();
         Tag tag;
         if (StringUtils.isBlank(tagUuid)) {
             throw new TagServiceClientException(ErrorMessage.ERROR_CODE_EMPTY_TAG_ID.getCode(),
@@ -118,6 +111,7 @@ public class TagManagementServiceImpl implements TagManagementService {
     public TagListResult filterTags(int limit, int offset, String sortBy, String sortOrder, String filter)
             throws TagServiceException {
 
+        String tenantUuid = getTenantUuid();
         TagListResult tagListResult;
         TagManagementDAO tagManagementDAO = DAOFactory.getInstance().getTagManagementDAO();
         if (limit < 0) {
@@ -142,6 +136,7 @@ public class TagManagementServiceImpl implements TagManagementService {
     public void updateTag(String tagUuid, String name, String description, boolean isPubliclyVisible)
             throws TagServiceException {
 
+        String tenantUuid = getTenantUuid();
         if (StringUtils.isBlank(tagUuid)) {
             throw new TagServiceClientException(ErrorMessage.ERROR_CODE_EMPTY_TAG_ID.getCode(),
                     ErrorMessage.ERROR_CODE_EMPTY_TAG_ID.getMessage());
@@ -161,6 +156,7 @@ public class TagManagementServiceImpl implements TagManagementService {
     @Override
     public void deleteTag(String tagUuid) throws TagServiceException {
 
+        String tenantUuid = getTenantUuid();
         if (!isTagUUidValid(tagUuid)) {
             throw new TagServiceClientException(ErrorMessage.ERROR_CODE_EMPTY_TAG_ID.getCode(),
                     ErrorMessage.ERROR_CODE_EMPTY_TAG_ID.getMessage());
@@ -176,6 +172,7 @@ public class TagManagementServiceImpl implements TagManagementService {
     @Override
     public void addAssociation(String tagUuid, String resourceUuid) throws TagServiceException {
 
+        String tenantUuid = getTenantUuid();
         if (StringUtils.isBlank(tagUuid)) {
             throw new TagServiceClientException(ErrorMessage.ERROR_CODE_EMPTY_TAG_ID.getCode(),
                     ErrorMessage.ERROR_CODE_EMPTY_TAG_ID.getMessage());
@@ -185,6 +182,10 @@ public class TagManagementServiceImpl implements TagManagementService {
                     ErrorMessage.ERROR_CODE_EMPTY_RESOURCE_UUID.getMessage());
         }
         TagManagementDAO tagManagementDAO = DAOFactory.getInstance().getTagManagementDAO();
+        if (tagManagementDAO.isExistingAssociation(tagUuid, resourceUuid)) {
+            throw new TagServiceClientException(ErrorMessage.ERROR_CODE_TAG_ASC_ALREADY_EXISTS.getCode(),
+                    ErrorMessage.ERROR_CODE_TAG_ASC_ALREADY_EXISTS.getMessage());
+        }
         tagManagementDAO.storeAssociation(tagUuid, resourceUuid, tenantUuid);
     }
 
@@ -245,8 +246,7 @@ public class TagManagementServiceImpl implements TagManagementService {
             }
             String tenantUuid = tenant.getTenantUniqueID();
             if (StringUtils.isBlank(tenantUuid)) {
-                throw new TagServiceException(ErrorMessage.ERROR_CODE_NO_UNIQUE_ID_FOR_TENANT.getCode(),
-                        String.format(ErrorMessage.ERROR_CODE_NO_UNIQUE_ID_FOR_TENANT.getMessage(), tenantId));
+                tenantUuid = "-1234";
             }
             return tenantUuid;
         } catch (UserStoreException e) {
@@ -267,14 +267,18 @@ public class TagManagementServiceImpl implements TagManagementService {
         }
     }
 
-    private boolean isTagNameValid(String name) {
+    private void isTagNameValid(String name) throws TagServiceClientException {
 
         if (StringUtils.isBlank(name)) {
-            return false;
+            throw new TagServiceClientException(ErrorMessage.ERROR_CODE_EMPTY_NAME.getCode(),
+                    ErrorMessage.ERROR_CODE_EMPTY_NAME.getMessage());
         }
         String regexName = "\\p{Upper}(\\p{Lower}+\\s?)";
         String patternName = "(" + regexName + "){2,3}";
-        return name.matches(patternName);
+        if (!(name.matches(patternName))) {
+            throw new TagServiceClientException(ErrorMessage.ERROR_CODE_INVALID_TAG_NAME.getCode(),
+                    ErrorMessage.ERROR_CODE_INVALID_TAG_NAME.getMessage());
+        }
     }
 
     private boolean isTagUUidValid(String tagUuid) {
