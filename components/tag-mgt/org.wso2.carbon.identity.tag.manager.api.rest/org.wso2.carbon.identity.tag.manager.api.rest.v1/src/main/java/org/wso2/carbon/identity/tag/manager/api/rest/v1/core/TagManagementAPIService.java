@@ -278,7 +278,6 @@ public class TagManagementAPIService {
         String leftFormattedFilter = "";
         String rightFormattedFilter = "";
         String formattedFilter;
-        assert expressionNode != null;
         ExpressionNode leftNode = (ExpressionNode) expressionNode.getLeftNode();
         if (leftNode != null) {
             leftFormattedFilter = generateFilterString(leftNode.getOperation(), leftNode.getValue());
@@ -369,12 +368,13 @@ public class TagManagementAPIService {
         if (!validateName(tagCreateRequest.getName())) {
             throw handleError(Response.Status.BAD_REQUEST, Constants.ErrorMessages.ERROR_CODE_INVALID_TAG_NAME);
         }
+
     }
 
     private boolean validateName(String name) {
 
         String regexName = "\\p{Upper}(\\p{Lower}+\\s?)";
-        String patternName = "(" + regexName + "){2,3}";
+        String patternName = "(" + regexName + "){1,3}";
         return name.matches(patternName);
     }
 

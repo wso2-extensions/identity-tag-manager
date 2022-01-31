@@ -133,7 +133,7 @@ public class TagManagementDAOImpl implements TagManagementDAO {
             prepStmt.setString(1, tagUuid);
             prepStmt.setString(2, tag.getName());
             prepStmt.setString(3, tag.getDescription());
-            prepStmt.setString(4, String.valueOf(tag.isPubliclyVisible()));
+            prepStmt.setString(4, (tag.isPubliclyVisible()? "1":"0"));
             prepStmt.setString(5, tag.getType());
             prepStmt.setString(6, tenantUuid);
             prepStmt.execute();

@@ -106,7 +106,7 @@ public class TagsApi  {
         })
     }, tags={ "Tags", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Successfully Deleted", response = Void.class),
+        @ApiResponse(code = 204, message = "Successfully Deleted", response = Void.class),
         @ApiResponse(code = 400, message = "Bad Request", response = Error.class),
         @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
         @ApiResponse(code = 403, message = "Forbidden", response = Void.class),

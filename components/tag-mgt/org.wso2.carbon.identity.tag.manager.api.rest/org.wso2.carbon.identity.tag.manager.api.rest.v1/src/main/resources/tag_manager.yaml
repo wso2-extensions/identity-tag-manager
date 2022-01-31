@@ -47,7 +47,7 @@ paths:
         required: true
       responses:
         '201':
-          description: "OK"
+          description: "Successful Response"
           headers:
             Location:
               description: This denotes the location of the newly-created tag.
@@ -221,7 +221,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/tagIdPathParam'
       responses:
-        '200':
+        '204':
           description: "Successfully Deleted"
         '400':
           description: "Bad Request"
